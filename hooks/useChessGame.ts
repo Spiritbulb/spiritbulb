@@ -270,7 +270,7 @@ export const useChessGame = (initialDifficulty: number = 10) => {
 
         try {
             const lines = await game.evaluatePosition({
-                depth: 3,
+                depth: 4,
                 skillLevel: 15,
                 multiPV: 1
             });
