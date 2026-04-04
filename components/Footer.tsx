@@ -1,56 +1,57 @@
 'use client';
 import Link from 'next/link';
 import { Twitter, Github, Mail, Linkedin } from 'lucide-react';
+import { footer, label } from 'framer-motion/client';
 
 export default function Footer() {
     return (
-        <footer className="footer">
-            <div className="footer-content">
-                <div className="footer-top">
-                    <div className="footer-brand">
-                        <h3>Welcome to Spiritbulb</h3>
-                        <p>Every tool we launch, every problem we solve, and every Kenyan we help is a step toward a more connected, more capable digital economy.</p>
-                    </div>
-                    <div className="footer-sections">
-                        <div className="footer-section">
-                            <h4>Products</h4>
-                            <Link href="https://blog.spiritbulb.org/the-truth-about-a-student-network">Nuru</Link>
-                            <Link href="https://blog.spiritbulb.org/the-easiest-social-marketplace-experience">Reach</Link>
-                            <Link href="https://blog.spiritbulb.org/take-a-break-you-deserve-it">Tufike</Link>
-                            <Link href="https://blog.spiritbulb.org/building-a-country-thats-more-connected">Menengai Cloud</Link>
-                        </div>
-                        <div className="footer-section">
-                            <h4>Company</h4>
-                            <Link href="https://blog.spiritbulb.org">About</Link>
-                            <Link href="/contact">Contact</Link>
-                        </div>
-                        <div className="footer-section">
-                            <h4>Connect</h4>
-                            <div className="footer-social">
-                                <a href="https://twitter.com/spiritbulb" target="_blank" rel="noopener noreferrer">
-                                    <Twitter className="w-5 h-5" />
-                                </a>
-                                <a href="https://github.com/spiritbulb" target="_blank" rel="noopener noreferrer">
-                                    <Github className="w-5 h-5" />
-                                </a>
-                                <a href="https://linkedin.com/company/spiritbulb" target="_blank" rel="noopener noreferrer">
-                                    <Linkedin className="w-5 h-5" />
-                                </a>
-                                <a href="mailto:hello@spiritbulb.org">
-                                    <Mail className="w-5 h-5" />
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+        <footer className="w-full border-t border-neutral-200 dark:border-neutral-800">
+            <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+
+                {/* Copyright */}
+                <p className="text-xs text-neutral-400 dark:text-neutral-500 tracking-wide">
+                    © {new Date().getFullYear()} Spiritbulb
+                </p>
+
+                {/* Legal links */}
+                <div className="flex items-center gap-5 text-xs text-neutral-400 dark:text-neutral-500">
+                    <Link
+                        href="/privacy"
+                        className="hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors"
+                    >
+                        Privacy
+                    </Link>
+                    <span className="text-neutral-300 dark:text-neutral-700 select-none">·</span>
+                    <Link
+                        href="/terms"
+                        className="hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors"
+                    >
+                        Terms
+                    </Link>
                 </div>
-                <div className="footer-bottom">
-                    <p>&copy; {new Date().getFullYear()} Spiritbulb. All rights reserved.</p>
-                    <div className="footer-legal">
-                        <Link href="/privacy">Privacy Policy</Link>
-                        <Link href="/terms">Terms of Service</Link>
-                    </div>
+
+                {/* Social icons */}
+                <div className="flex items-center gap-3">
+                    {[
+                        { href: 'https://twitter.com/spiritbulb', Icon: Twitter, label: 'Twitter' },
+                        { href: 'https://github.com/spiritbulb', Icon: Github, label: 'GitHub' },
+                        { href: 'https://linkedin.com/company/spiritbulb', Icon: Linkedin, label: 'LinkedIn' },
+                        { href: 'mailto:hello@spiritbulb.org', Icon: Mail, label: 'Email' },
+                    ].map(({ href, Icon, label }) => (
+                        <a
+                            key={label}
+                            href={href}
+                            aria-label={label}
+                            target={href.startsWith('mailto') ? undefined : '_blank'}
+                            rel={href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
+                            className="text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors"
+                        >
+                            <Icon className="w-4 h-4" />
+                        </a>
+                    ))}
                 </div>
+
             </div>
-        </footer>
+        </footer >
     );
 }

@@ -103,9 +103,12 @@ const jsonLd = {
   founders: [{
     '@type': 'Person',
     name: 'Bentley Busienei',
+  }, {
+    '@type': 'Person',
+    name: 'Stephanie Kanji',
   }],
   numberOfEmployees: '10-50',
-  slogan: 'Igniting Kenya\'s Future in Tech, Community & Education',
+  slogan: '#ThatsTheSpirit',
 };
 
 export default function RootLayout({
@@ -115,7 +118,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -128,10 +133,6 @@ export default function RootLayout({
             `,
           }}
         />
-      </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
         <Header />
         {children}
         <Footer />

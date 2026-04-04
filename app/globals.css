@@ -403,7 +403,6 @@ body {
   background: var(--background);
   color: var(--foreground);
   padding: 4rem 2rem 2rem;
-  border-top: 1px solid var(--border-color);
   margin-top: 4rem;
 }
 
@@ -417,7 +416,7 @@ body {
   grid-template-columns: 2fr 3fr;
   gap: 3rem;
   padding-bottom: 3rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
 }
 
 .footer-brand h3 {
@@ -464,7 +463,6 @@ body {
 .footer-social {
   display: flex;
   gap: 1rem;
-  margin-top: 0.5rem;
 }
 
 .footer-social a {
