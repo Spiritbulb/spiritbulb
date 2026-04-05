@@ -1,5 +1,5 @@
 "use client";
-import React, { lazy, Suspense } from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,8 +7,6 @@ import { Marquee } from "@/components/ui/marquee";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { Highlighter } from "@/components/ui/highlighter";
 import { useRouter } from "next/navigation";
-
-const ChessGame = lazy(() => import("@/components/Chess"));
 
 const reachSrc = "/reach-w.png";
 const tufikeSrc = "/tufike-w.png";
@@ -191,10 +189,10 @@ export default function HomePage() {
         <main className="min-h-screen bg-background">
 
             {/* ── Hero ────────────────────────────────────────────────────────────── */}
-            <Section bordered={false} className="py-12 md:py-20">
+            <Section bordered={false} className="pt-12 md:pt-20">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
                     {/* Copy */}
-                    <div className="space-y-8 lg:order-2">
+                    <div className="space-y-8 lg:order-1">
                         <div className="space-y-4">
                             <h1 className="text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">
                                 The Kenyan digital ecosystem
@@ -204,11 +202,10 @@ export default function HomePage() {
                                 <Highlighter action="underline" color="var(--highlight-spiritbulb)">
                                     Spiritbulb
                                 </Highlighter>
-                                . A Kenyan-born tech enterprise with a bold vision: transform how people in Kenya
-                                connect, learn, and thrive by 2040.
+                                . A Kenyan-born tech company with a bold vision: transform how people connect and learn by 2040.
                             </p>
                             <p className="text-base text-muted-foreground md:text-lg leading-relaxed">
-                                We're building tools that connect people, ideas, and opportunities — built here,
+                                We're building tools that connect people, ideas, and opportunities that are built here,
                                 for here.
                             </p>
                         </div>
@@ -223,19 +220,17 @@ export default function HomePage() {
                                 Join the team →
                             </Button>
                         </div>
-
-                        <p className="text-sm text-muted-foreground">
-                            While you're here —{" "}
-                            <strong className="text-foreground">try to beat us</strong> at chess.
-                        </p>
                     </div>
 
-                    {/* Chess */}
-                    <div className="w-full flex justify-center lg:order-1">
-                        <div className="w-full max-w-xl" aria-label="Interactive chess game — challenge Spiritbulb's AI">
-                            <Suspense fallback={<ChessSkeleton />}>
-                                <ChessGame />
-                            </Suspense>
+                    {/* Image */}
+                    <div className="relative lg:order-2 hidden lg:block">
+                        <div className="relative">
+                            <img
+                                src="/future.svg"
+                                alt="That's the spirit"
+                                className="w-full h-auto"
+                                loading="eager"
+                            />
                         </div>
                     </div>
                 </div>
@@ -300,45 +295,65 @@ export default function HomePage() {
 
             {/* ── Menengai Cloud ────────────────────────────────────────────────────── */}
             <Section id="menengai" aria-labelledby="menengai-heading">
-                <div className="max-w-2xl space-y-6">
-                    <img src="/menengai.ico" alt="Menengai Cloud" className="h-8 w-8" width={32} height={32} loading="lazy" />
-                    <h2 id="menengai-heading" className="text-2xl font-bold md:text-4xl tracking-tight">
-                        Your store in 2 minutes
-                    </h2>
-                    <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
-                        <p>Stop waiting on agencies. Claim your link, verify your email, you're live. SSL, backups, and uptime monitoring included.</p>
-                        <p>Your content, your audience, your money — we just keep the lights on.</p>
+                <div className="grid grid-cols-2 gap-2">
+                    <div className="relative max-w-2xl space-y-6 order-1 lg:order-2">
+                        <img src="/menengai.ico" alt="Menengai Cloud" className="h-8 w-8" width={32} height={32} loading="lazy" />
+                        <h2 id="menengai-heading" className="text-2xl font-bold md:text-4xl tracking-tight">
+                            Your store in 2 minutes
+                        </h2>
+                        <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
+                            <p>Stop waiting on agencies. Claim your link, verify your email, you're live. SSL, backups, and uptime monitoring included.</p>
+                            <p>Your content, your audience, your money — we just keep the lights on.</p>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {["🆕 Just launched", "Stores & creator tools", "Free to start", "99.9% uptime"].map((b) => (
+                                <Badge key={b} variant="secondary">{b}</Badge>
+                            ))}
+                        </div>
+                        <Button className="gap-2" asChild>
+                            <a href="https://menengai.cloud" target="_blank" rel="noopener noreferrer">
+                                Claim your free store <ExternalLink className="h-4 w-4" />
+                            </a>
+                        </Button>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                        {["🆕 Just launched", "Stores & creator tools", "Free to start", "99.9% uptime"].map((b) => (
-                            <Badge key={b} variant="secondary">{b}</Badge>
-                        ))}
+                    <div className="relative lg:order-1">
+                        <img
+                            src="/mcloud.svg"
+                            alt="3 easy steps"
+                            className="w-full h-auto"
+                            loading="eager"
+                        />
                     </div>
-                    <Button className="gap-2" asChild>
-                        <a href="https://menengai.cloud" target="_blank" rel="noopener noreferrer">
-                            Claim your free store <ExternalLink className="h-4 w-4" />
-                        </a>
-                    </Button>
                 </div>
             </Section>
 
             {/* ── Tufike ────────────────────────────────────────────────────────────── */}
             <Section id="tufike" aria-labelledby="tufike-heading">
-                <div className="max-w-2xl space-y-6">
-                    <Highlighter action="highlight" color="var(--highlight-reach)">
-                        <img src={tufikeSrc} alt="Tufike" className="h-8 w-auto" loading="lazy" />
-                    </Highlighter>
-                    <h2 id="tufike-heading" className="text-2xl font-bold md:text-4xl tracking-tight">
-                        Where you'd actually show up
-                    </h2>
-                    <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
-                        <p>Tufike is the part where you leave the screen and actually meet the people you've been building with.</p>
-                        <p>Still early, but the demand is loud: students and young builders keep asking for rooms, not just links.</p>
+                <div className="grid grid-cols-2 gap-2">
+                    <div className="max-w-2xl space-y-6">
+                        <Highlighter action="highlight" color="var(--highlight-reach)">
+                            <img src={tufikeSrc} alt="Tufike" className="h-8 w-auto" loading="lazy" />
+                        </Highlighter>
+                        <h2 id="tufike-heading" className="text-2xl font-bold md:text-4xl tracking-tight">
+                            Where you'd actually show up
+                        </h2>
+                        <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
+                            <p>Tufike is the part where you leave the screen and actually meet the people.</p>
+                            <p>Still early, but the demand is loud: students and young builders keep asking for rooms, not just links.</p>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {["Community events", "Early stage", "Pop-up style"].map((b) => (
+                                <Badge key={b} variant="secondary">{b}</Badge>
+                            ))}
+                        </div>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                        {["Community events", "Early stage", "Pop-up style"].map((b) => (
-                            <Badge key={b} variant="secondary">{b}</Badge>
-                        ))}
+                    <div className="relative lg:order-1">
+                        <img
+                            src="/tufike.svg"
+                            alt="3 easy steps"
+                            className="w-full h-auto"
+                            loading="eager"
+                        />
                     </div>
                 </div>
             </Section>
@@ -363,12 +378,12 @@ export default function HomePage() {
                 <div className="max-w-2xl space-y-8">
                     <div className="space-y-4">
                         <h2 className="text-2xl font-bold md:text-4xl tracking-tight">
-                            It's cool, a little challenging, and worth it.
+                            Are you in?
                         </h2>
                         <p className="text-muted-foreground text-sm leading-relaxed md:text-base">
                             We're still early. The brands are proving themselves in the wild, and we're welding
                             everything together into one ecosystem as we go. If you care about students, local
-                            merchants, or African infra — this is your kind of chaos.
+                            merchants, or African infrastructure, we'd love to hear from you.
                         </p>
                     </div>
                     <div className="flex flex-wrap items-center gap-3">
@@ -376,8 +391,8 @@ export default function HomePage() {
                             Talk to Spiritbulb <ArrowRight className="h-4 w-4" />
                         </Button>
                         <Button variant="outline" size="lg" asChild>
-                            <a href="https://nuru.spiritbulb.org" target="_blank" rel="noopener noreferrer">
-                                See what Nuru is doing →
+                            <a href="https://menengai.cloud" target="_blank" rel="noopener noreferrer">
+                                See what Menengai Cloud is doing →
                             </a>
                         </Button>
                     </div>
