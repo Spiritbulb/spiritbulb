@@ -295,7 +295,7 @@ export default function HomePage() {
 
             {/* ── Menengai Cloud ────────────────────────────────────────────────────── */}
             <Section id="menengai" aria-labelledby="menengai-heading">
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-rows-1 md:grid-cols-2 gap-2">
                     <div className="relative max-w-2xl space-y-6 order-1 lg:order-2">
                         <img src="/menengai.ico" alt="Menengai Cloud" className="h-8 w-8" width={32} height={32} loading="lazy" />
                         <h2 id="menengai-heading" className="text-2xl font-bold md:text-4xl tracking-tight">
@@ -316,7 +316,7 @@ export default function HomePage() {
                             </a>
                         </Button>
                     </div>
-                    <div className="relative lg:order-1">
+                    <div className="relative lg:order-1 hidden lg:block">
                         <img
                             src="/mcloud.svg"
                             alt="3 easy steps"
@@ -329,7 +329,7 @@ export default function HomePage() {
 
             {/* ── Tufike ────────────────────────────────────────────────────────────── */}
             <Section id="tufike" aria-labelledby="tufike-heading">
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-rows-1 md:grid-cols-2 gap-2">
                     <div className="max-w-2xl space-y-6">
                         <Highlighter action="highlight" color="var(--highlight-reach)">
                             <img src={tufikeSrc} alt="Tufike" className="h-8 w-auto" loading="lazy" />
@@ -347,7 +347,7 @@ export default function HomePage() {
                             ))}
                         </div>
                     </div>
-                    <div className="relative lg:order-1">
+                    <div className="relative lg:order-1 hidden lg:block">
                         <img
                             src="/tufike.svg"
                             alt="3 easy steps"
