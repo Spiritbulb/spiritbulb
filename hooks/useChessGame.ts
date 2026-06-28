@@ -19,12 +19,12 @@ export type GameState =
 // ── Square style tokens ──────────────────────────────────────────────
 // All visual constants live here so the component owns zero board styling.
 
-/** Selected piece — yellow tint, chess.com style */
+/** Selected piece, yellow tint, chess.com style */
 const SQ_SELECTED = { background: 'rgba(255, 215, 0, 0.55)' };
 
 /**
  * Move-hint dot for empty squares.
- * A small centred disc — visible on both light and dark squares.
+ * A small centred disc, visible on both light and dark squares.
  */
 const SQ_MOVE_HINT = {
     background: 'radial-gradient(circle, rgba(0,0,0,0.22) 29%, transparent 29%)',
@@ -39,10 +39,10 @@ const SQ_CAPTURE_HINT = {
         'radial-gradient(circle, transparent 57%, rgba(0,0,0,0.22) 57%)',
 };
 
-/** Last move — from square */
+/** Last move, from square */
 const SQ_LAST_FROM = { background: 'rgba(155, 199, 0, 0.41)' };
 
-/** Last move — to square */
+/** Last move, to square */
 const SQ_LAST_TO = { background: 'rgba(155, 199, 0, 0.41)' };
 
 /** King in check */
@@ -75,7 +75,7 @@ const CHECKMATE_MESSAGES = {
     reverb: ['Checkmate! I win', 'Game over', 'Better luck next time'],
 };
 
-/** Stable empty-object reference — avoids allocating {} on every clear */
+/** Stable empty-object reference, avoids allocating {} on every clear */
 const EMPTY_SQUARES: Record<string, React.CSSProperties> = Object.freeze({});
 
 const getRandomMessage = (array: string[]): string =>
@@ -277,7 +277,7 @@ export const useChessGame = (initialDifficulty: number = 10) => {
 
     const isThinkingRef = useRef(false);
 
-    // All game-status checks in one memo — avoids calling game methods multiple times
+    // All game-status checks in one memo, avoids calling game methods multiple times
     const { capturedPieces, gameState, isGameOver, turn } = useMemo(() => {
         const checkmate = game.isCheckmate();
         const stalemate = game.isStalemate();
@@ -479,7 +479,7 @@ export const useChessGame = (initialDifficulty: number = 10) => {
 
         const styles: Record<string, React.CSSProperties> = {};
 
-        // 1. Last move (lowest priority — always visible as background context)
+        // 1. Last move (lowest priority, always visible as background context)
         if (hasLastMove) {
             styles[lastMove!.from] = SQ_LAST_FROM;
             styles[lastMove!.to] = SQ_LAST_TO;
@@ -490,7 +490,7 @@ export const useChessGame = (initialDifficulty: number = 10) => {
             Object.assign(styles, moveSquares);
         }
 
-        // 3. King in check (highest priority — always visible)
+        // 3. King in check (highest priority, always visible)
         if (hasCheck) {
             styles[kingInCheckSquare!] = SQ_CHECK;
         }

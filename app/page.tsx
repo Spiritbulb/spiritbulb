@@ -7,9 +7,9 @@ import HomePage from "@/components/home-client";
 
 export const metadata: Metadata = {
   // ── Core ──────────────────────────────────────────────────────────────────
-  title: "Spiritbulb | Nuru, Reach, Menengai Cloud & Tufike",
+  title: "Spiritbulb | Build, sell, and engage your audience",
   description:
-    "Spiritbulb is a Kenyan tech company building four products: Nuru (student network), Reach (local e-commerce), Menengai Cloud (African infra), and Tufike (community events).",
+    "Spiritbulb provides an ecosystem to build, sell, and engage your audience. MCloud, Reach, Nuru, and Tufike, running on Spiritbulb's own infrastructure in Kenya.",
 
   // ── Canonical & robots ────────────────────────────────────────────────────
   metadataBase: new URL("https://spiritbulb.org"),
@@ -21,9 +21,9 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://spiritbulb.org",
     siteName: "Spiritbulb",
-    title: "Spiritbulb | Building Kenya's Digital Ecosystem",
+    title: "Spiritbulb | Build, sell, and engage your audience",
     description:
-      "Four products, one engine: Nuru connects students, Reach powers local merchants, Menengai Cloud is African infrastructure, and Tufike brings communities offline.",
+      "Spiritbulb provides an ecosystem to build, sell, and engage your audience. MCloud, Reach, Nuru, and Tufike run on Spiritbulb's own infrastructure.",
     images: [
       {
         url: "/og-image.png",
@@ -39,9 +39,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     site: "@spiritbulb",
-    title: "Spiritbulb | Building Kenya's Digital Ecosystem",
+    title: "Spiritbulb | Build, sell, and engage your audience",
     description:
-      "Four products, one engine: Nuru, Reach, Menengai Cloud, and Tufike.",
+      "MCloud, Reach, Nuru, and Tufike, the Spiritbulb ecosystem, built in Kenya.",
     images: ["/og-image.png"],
   },
 
@@ -77,7 +77,7 @@ const jsonLd = {
         "https://linkedin.com/company/spiritbulb",
       ],
       description:
-        "Kenyan tech company building Nuru, Reach, Menengai Cloud, and Tufike.",
+        "Spiritbulb provides an ecosystem to build, sell, and engage your audience. Runs on its own infrastructure in Kenya.",
       foundingLocation: {
         "@type": "Place",
         name: "Kenya",
@@ -98,7 +98,7 @@ const jsonLd = {
       operatingSystem: "Web",
       url: "https://nuru.spiritbulb.org",
       description:
-        "The official student network for Kenyan university students — verified campuses, shared spaces, and collaborative tools.",
+        "Nuru manages educational content for institutions in Kenya.",
       offers: { "@type": "Offer", price: "0", priceCurrency: "KES" },
     },
     {
@@ -107,7 +107,7 @@ const jsonLd = {
       applicationCategory: "ShoppingApplication",
       operatingSystem: "Web",
       description:
-        "Local e-commerce marketplace for Kenyan merchants. 13 merchants and KSH 250k+ in products listed in Nakuru within a month.",
+        "Reach manages social media and fulfillment integrations for merchants and NGOs in Kenya.",
       offers: { "@type": "Offer", price: "0", priceCurrency: "KES" },
     },
     {
@@ -116,7 +116,7 @@ const jsonLd = {
       applicationCategory: "BusinessApplication",
       operatingSystem: "Web",
       description:
-        "Cloud infrastructure designed for Kenyan and African businesses — optimised for local latency, pricing, and reliability.",
+        "MCloud manages apps and cloud services for merchants, brokers, and NGOs in Kenya.",
     },
     {
       "@type": "SoftwareApplication",
@@ -124,7 +124,7 @@ const jsonLd = {
       applicationCategory: "EventsApplication",
       operatingSystem: "Web",
       description:
-        "Community events and meetup layer connecting students and builders in Kenya.",
+        "Tufike manages brand exposure and venues in Kenya.",
     },
   ],
 };

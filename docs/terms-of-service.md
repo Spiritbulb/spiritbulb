@@ -181,7 +181,7 @@ We do not warrant that our services will be error-free, uninterrupted, or free o
 
 ## 13. Limitation of Liability
 
-To the fullest extent permitted by applicable law, Spiritbulb LTD and its directors, employees, and agents will not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of, or inability to use, our services — including loss of profits, data, or goodwill.
+To the fullest extent permitted by applicable law, Spiritbulb LTD and its directors, employees, and agents will not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of, or inability to use, our services, including loss of profits, data, or goodwill.
 
 Our total liability to you for any claim arising from use of our services shall not exceed the amount you paid to Spiritbulb in the 3 months preceding the event giving rise to the claim.
 

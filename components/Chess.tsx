@@ -20,7 +20,7 @@ const PIECE_VALUES: Record<PieceSymbol, number> = {
     p: 1, n: 3, b: 3, r: 5, q: 9, k: 0,
 };
 
-// Static style objects — module-level so they're never new references
+// Static style objects, module-level so they're never new references
 // and never invalidate useMemo / boardOptions deps.
 const BOARD_STYLE = {
     borderRadius: '3px',
@@ -33,7 +33,7 @@ const LIGHT_SQUARE_STYLE = { backgroundColor: 'var(--chess-light-square, #f0d9b5
 
 const SPRING_FAST = { type: 'spring', stiffness: 400, damping: 25 } as const;
 
-// Static config — icons created once, never re-instantiated per render
+// Static config, icons created once, never re-instantiated per render
 const STATUS_CONFIG: Record<string, {
     icon: React.ReactNode;
     text: string;
@@ -54,13 +54,13 @@ const STATUS_CONFIG: Record<string, {
     },
     stalemate: {
         icon: <Flag className="h-4 w-4 shrink-0" />,
-        text: 'Stalemate — a draw.',
+        text: 'Stalemate, a draw.',
         bg: 'bg-amber-500/10',
         border: 'border-amber-500/30',
     },
     draw: {
         icon: <Flag className="h-4 w-4 shrink-0" />,
-        text: 'Draw — well matched.',
+        text: 'Draw, well matched.',
         bg: 'bg-amber-500/10',
         border: 'border-amber-500/30',
     },

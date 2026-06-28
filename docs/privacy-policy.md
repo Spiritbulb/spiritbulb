@@ -2,10 +2,10 @@
 
 Welcome to Spiritbulb. This Privacy Policy explains how Spiritbulb LTD ("Spiritbulb", "we", "our", or "us"), a company registered in Kenya, collects, uses, stores, and protects your personal information when you use any of our platforms and services, including:
 
-- **Nuru** — our student community network
-- **Reach** — our local e-commerce marketplace
-- **Menengai Cloud (MCloud)** — our store and creator tools platform
-- **Tufike** — our in-person events platform
+- **Nuru**, our student community network
+- **Reach**, our local e-commerce marketplace
+- **Menengai Cloud (MCloud)**, our store and creator tools platform
+- **Tufike**, our in-person events platform
 
 By accessing or using any Spiritbulb service, you agree to the terms of this Privacy Policy. If you do not agree, please do not use our services.
 
@@ -85,7 +85,7 @@ We share your information only in the following circumstances:
 
 ### 6.2 With Service Providers
 
-We work with trusted third-party companies to help us operate our services — for example, hosting providers, payment processors, and analytics services. These providers are contractually required to use your data only to perform services on our behalf.
+We work with trusted third-party companies to help us operate our services, for example, hosting providers, payment processors, and analytics services. These providers are contractually required to use your data only to perform services on our behalf.
 
 ### 6.3 For Legal Reasons
 

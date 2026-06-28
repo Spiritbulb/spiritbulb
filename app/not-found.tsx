@@ -10,7 +10,7 @@ export default function NotFound() {
 
     return (
         <main className="min-h-screen bg-background">
-            <BackgroundMeteors>
+     
                 <section className="w-full py-20">
                     <div className="container mx-auto px-4 py-20 md:px-6 lg:px-8">
                         <div className="mx-auto max-w-3xl space-y-12 text-center">
@@ -71,7 +71,7 @@ export default function NotFound() {
                         </div>
                     </div>
                 </section>
-            </BackgroundMeteors>
+    
         </main>
     );
 }

@@ -39,7 +39,7 @@ export default function CareersPage() {
                                     </h2>
                                     <p className="text-muted-foreground">
                                         When hiring opens up, we'll be looking for people who get
-                                        it — the kind who care about building things that matter,
+                                        it, the kind who care about building things that matter,
                                         not just padding a resume. Engineers who can ship.
                                         Designers who understand users. Operators who don't need
                                         hand-holding.

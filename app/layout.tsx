@@ -123,14 +123,7 @@ export default function RootLayout({
       >
         <script
           dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                const storedTheme = localStorage.getItem('theme');
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                const initialTheme = storedTheme || (prefersDark ? 'dark' : 'light');
-                document.documentElement.setAttribute('data-theme', initialTheme);
-              })();
-            `,
+            __html: `(function(){var t=localStorage.getItem('theme'),d=window.matchMedia('(prefers-color-scheme: dark)').matches,dark=t?t==='dark':d;document.documentElement.setAttribute('data-theme',dark?'dark':'light');if(dark)document.documentElement.classList.add('dark');})();`,
           }}
         />
         <Header />

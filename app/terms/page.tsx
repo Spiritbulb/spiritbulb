@@ -42,7 +42,7 @@ export default function TermsOfServicePage() {
 
                     <div className="mt-12 pt-8 border-t flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
                         <p className="text-xs text-muted-foreground">
-                            Questions about these terms? Just ask — we're reachable.
+                            Questions about these terms? Just ask, we're reachable.
                         </p>
                         <div className="flex gap-3">
                             <Button size="sm" variant="outline" asChild>
