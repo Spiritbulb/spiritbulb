@@ -61,7 +61,7 @@ export default function HomePage() {
                                 <Highlighter action="underline" color="var(--highlight-spiritbulb)">
                                     Spiritbulb
                                 </Highlighter>{" "}
-                                provides an ecosystem to build, sell, and engage your audience. Our apps run on our own infrastructure.
+                                provides an ecosystem to build, sell, and engage your audience. Start with a website that grows with your business.
                             </p>
                         </div>
                         <div className="flex flex-wrap items-center gap-3">
