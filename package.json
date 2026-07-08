@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@chessle/chess.js-extended": "^0.1.0",
+    "@marsidev/react-turnstile": "^1.5.3",
     "@perplexity-ai/perplexity_ai": "^0.18.1",
     "@radix-ui/react-slot": "^1.2.4",
     "@tailwindcss/typography": "^0.5.19",
