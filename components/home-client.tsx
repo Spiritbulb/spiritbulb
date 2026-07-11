@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ExternalLink } from "lucide-react";
-import { Highlighter } from "@/components/ui/highlighter";
 import { useRouter } from "next/navigation";
+import EcosystemHero from "@/components/EcosystemHero";
 
 function useDarkMode() {
     const [dark, setDark] = useState(() =>
@@ -50,41 +50,7 @@ export default function HomePage() {
         <main className="min-h-screen bg-background">
 
             {/* ── Hero ── */}
-            <Section bordered={false} className="pt-12 md:pt-20">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-                    <div className="space-y-8 lg:order-1">
-                        <div className="space-y-4">
-                            <h1 className="text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">
-                                Kenya's apps are being built here.
-                            </h1>
-                            <p className="text-base text-muted-foreground md:text-lg leading-relaxed">
-                                <Highlighter action="underline" color="var(--highlight-spiritbulb)">
-                                    Spiritbulb
-                                </Highlighter>{" "}
-                                provides an ecosystem to build, sell, and engage your audience. Start with a website that grows with your business.
-                            </p>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-3">
-                            <Button size="lg" className="gap-2" asChild>
-                                <a href="https://mcloud.co.ke" target="_blank" rel="noopener noreferrer">
-                                    See MCloud <ArrowRight className="h-4 w-4" />
-                                </a>
-                            </Button>
-                            <Button variant="ghost" size="lg" onClick={() => router.push("/contribute")} className="border">
-                                Contribute
-                            </Button>
-                        </div>
-                    </div>
-                    <div className="relative lg:order-2 hidden lg:block">
-                        <img
-                            src="/future.svg"
-                            alt="That's the spirit"
-                            className="w-full h-auto"
-                            loading="eager"
-                        />
-                    </div>
-                </div>
-            </Section>
+            <EcosystemHero />
 
             {/* ── MCloud ── */}
             <Section id="menengai" aria-labelledby="menengai-heading">
@@ -115,27 +81,6 @@ export default function HomePage() {
                 </div>
             </Section>
 
-            {/* ── Reach ── */}
-            <Section id="reach" aria-labelledby="reach-heading">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-start">
-                    <div className="space-y-6">
-                        <img src={reachSrc} alt="Reach" className="h-8 w-auto" loading="lazy" />
-                        <h2 id="reach-heading" className="text-2xl font-bold md:text-4xl tracking-tight">
-                            Reach
-                        </h2>
-                        <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
-                            <p>13 merchants. Over KSH 250k listed in under a month. No billboards, just word of mouth.</p>
-                            <p>Reach manages social media and fulfillment integrations for merchants and NGOs across Kenya.</p>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {["13 merchants", "KSH 250k+ listed", "Nakuru"].map((b) => (
-                                <Badge key={b} variant="secondary">{b}</Badge>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </Section>
-
             {/* ── Nuru ── */}
             <Section id="nuru" aria-labelledby="nuru-heading">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-start">
@@ -153,8 +98,41 @@ export default function HomePage() {
                                 <Badge key={b} variant="secondary">{b}</Badge>
                             ))}
                         </div>
+                        <Button className="gap-2" asChild>
+                            <a href="/login?next=/home?app=nuru">
+                                Try Nuru live <ArrowRight className="h-4 w-4" />
+                            </a>
+                        </Button>
+                        <p className="text-xs text-muted-foreground">live demo, 5 messages</p>
                     </div>
                     <div className="hidden lg:block" />
+                </div>
+            </Section>
+
+            {/* ── Reach ── */}
+            <Section id="reach" aria-labelledby="reach-heading">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-start">
+                    <div className="space-y-6">
+                        <img src={reachSrc} alt="Reach" className="h-8 w-auto" loading="lazy" />
+                        <h2 id="reach-heading" className="text-2xl font-bold md:text-4xl tracking-tight">
+                            Reach
+                        </h2>
+                        <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
+                            <p>13 merchants. Over KSH 250k listed in under a month. No billboards, just word of mouth.</p>
+                            <p>Reach manages social media and fulfillment integrations for merchants and NGOs across Kenya.</p>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {["13 merchants", "KSH 250k+ listed", "Nakuru"].map((b) => (
+                                <Badge key={b} variant="secondary">{b}</Badge>
+                            ))}
+                        </div>
+                        <Button className="gap-2" asChild>
+                            <a href="/login?next=/home?app=reach">
+                                Explore Reach <ArrowRight className="h-4 w-4" />
+                            </a>
+                        </Button>
+                        <p className="text-xs text-muted-foreground">preview</p>
+                    </div>
                 </div>
             </Section>
 
@@ -178,6 +156,12 @@ export default function HomePage() {
                                 <Badge key={b} variant="secondary">{b}</Badge>
                             ))}
                         </div>
+                        <Button className="gap-2" asChild>
+                            <a href="/login?next=/home?app=tufike">
+                                Preview Tufike <ArrowRight className="h-4 w-4" />
+                            </a>
+                        </Button>
+                        <p className="text-xs text-muted-foreground">coming soon</p>
                     </div>
                 </div>
             </Section>
@@ -187,20 +171,20 @@ export default function HomePage() {
                 <div className="max-w-2xl space-y-8">
                     <div className="space-y-4">
                         <h2 className="text-2xl font-bold md:text-4xl tracking-tight">
-                            Are you in?
+                            One login. All four.
                         </h2>
                         <p className="text-muted-foreground text-sm leading-relaxed md:text-base">
-                            We're still early. If you care about merchants, institutions, or building something real in Kenya, we'd love to hear from you.
+                            The whole ecosystem opens with a single sign in. Start where you like.
                         </p>
                     </div>
                     <div className="flex flex-wrap items-center gap-3">
-                        <Button size="lg" className="gap-2" onClick={() => router.push("/contact")}>
-                            Talk to Spiritbulb <ArrowRight className="h-4 w-4" />
-                        </Button>
-                        <Button variant="outline" size="lg" asChild>
-                            <a href="https://mcloud.co.ke" target="_blank" rel="noopener noreferrer">
-                                See MCloud →
+                        <Button size="lg" className="gap-2" asChild>
+                            <a href="/login">
+                                Get in <ArrowRight className="h-4 w-4" />
                             </a>
+                        </Button>
+                        <Button variant="outline" size="lg" onClick={() => router.push("/contact")}>
+                            Talk to us
                         </Button>
                     </div>
                 </div>
