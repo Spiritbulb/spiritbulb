@@ -12,14 +12,14 @@ export const metadata: Metadata = {
     "Spiritbulb provides an ecosystem to build, sell, and engage your audience. MCloud, Reach, Nuru, and Tufike, running on Spiritbulb's own infrastructure in Kenya.",
 
   // ── Canonical & robots ────────────────────────────────────────────────────
-  metadataBase: new URL("https://spiritbulb.org"),
+  metadataBase: new URL("https://spiritb.uk"),
   alternates: { canonical: "/" },
   robots: { index: true, follow: true },
 
   // ── Open Graph (Facebook, WhatsApp, LinkedIn) ─────────────────────────────
   openGraph: {
     type: "website",
-    url: "https://spiritbulb.org",
+    url: "https://spiritb.uk",
     siteName: "Spiritbulb",
     title: "Spiritbulb | Build, sell, and engage your audience",
     description:
@@ -65,12 +65,12 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://spiritbulb.org/#org",
+      "@id": "https://spiritb.uk/#org",
       name: "Spiritbulb",
-      url: "https://spiritbulb.org",
+      url: "https://spiritb.uk",
       logo: {
         "@type": "ImageObject",
-        url: "https://spiritbulb.org/spiritbulb-logo.png",
+        url: "https://spiritb.uk/spiritbulb-logo.png",
       },
       sameAs: [
         "https://twitter.com/spiritbulb",  // update
@@ -85,10 +85,10 @@ const jsonLd = {
     },
     {
       "@type": "WebSite",
-      "@id": "https://spiritbulb.org/#website",
-      url: "https://spiritbulb.org",
+      "@id": "https://spiritb.uk/#website",
+      url: "https://spiritb.uk",
       name: "Spiritbulb",
-      publisher: { "@id": "https://spiritbulb.org/#org" },
+      publisher: { "@id": "https://spiritb.uk/#org" },
     },
     // Product entries (SoftwareApplication schema)
     {
@@ -96,7 +96,7 @@ const jsonLd = {
       name: "Nuru",
       applicationCategory: "SocialNetworkingApplication",
       operatingSystem: "Web",
-      url: "https://nuru.spiritbulb.org",
+      url: "https://nuru.spiritb.uk",
       description:
         "Nuru manages educational content for institutions in Kenya.",
       offers: { "@type": "Offer", price: "0", priceCurrency: "KES" },
