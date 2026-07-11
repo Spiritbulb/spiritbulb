@@ -20,4 +20,11 @@ describe("safeNext", () => {
     expect(safeNext("//evil.com")).toBe("/home");
     expect(safeNext("https://evil.com")).toBe("/home");
   });
+  it("rejects backslash-normalized open-redirect targets", () => {
+    expect(safeNext("/\\evil.com")).toBe("/home");
+    expect(safeNext("/\\/evil.com")).toBe("/home");
+  });
+  it("still passes through a legitimate internal path", () => {
+    expect(safeNext("/home?app=nuru")).toBe("/home?app=nuru");
+  });
 });
