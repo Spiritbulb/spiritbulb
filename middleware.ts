@@ -8,7 +8,8 @@ export function middleware(req: NextRequest) {
   const nextPath = req.nextUrl.pathname + req.nextUrl.search;
   const url = req.nextUrl.clone();
   url.pathname = "/login";
-  url.search = `?next=${nextPath}`;
+  url.search = "";
+  url.searchParams.set("next", nextPath);
   return NextResponse.redirect(url);
 }
 
