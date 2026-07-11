@@ -263,15 +263,22 @@ git commit -m "feat: session cookie helpers"
 - Consumes: env `MCLOUD_AUTH_BASE`, optional `MCLOUD_AUTH_SECRET`.
 - Produces:
   - `requestCode(email: string): Promise<{ ok: boolean; error?: string }>`
-  - `verifyCode(email: string, code: string): Promise<{ ok: boolean; token?: string; error?: string }>`
+  - `verifyCode(email: string, code: string): Promise<{ ok: boolean; accessToken?: string; refreshToken?: string; expiresIn?: number; error?: string }>`
   - Both call MCloud over `fetch`, read the endpoint base from `process.env.MCLOUD_AUTH_BASE`, and attach `MCLOUD_AUTH_SECRET` as an `x-spiritbulb-secret` header when present. Server-only (throws if `MCLOUD_AUTH_BASE` is unset).
 
-> **Planning-phase dependency (from the spec):** the exact MCloud endpoint paths and response
-> shapes are confirmed against the mcloud-1 repo before this task is implemented. This plan assumes
-> `POST {base}/request-code {email}` → `{ ok }` and `POST {base}/verify-code {email, code}` →
-> `{ ok, token }`. If the real contract differs, update ONLY this file's fetch calls and the test's
-> mock shapes. Fallback if MCloud cannot serve cross-origin: implement a self-contained code+cookie
-> auth here instead (out of scope unless the dependency fails).
+> **VERIFIED MCloud contract (mcloud-1, 2026-07-11) — use the MOBILE endpoints.** `MCLOUD_AUTH_BASE`
+> points at `https://mcloud.co.ke/api/mobile/auth`. The two calls are:
+> - `POST {base}/send-code {email}` → always `{ ok: true }` (200) even for unknown emails
+>   (anti-enumeration); 429 on rate limit; 400 on malformed body. So `requestCode` only reports an
+>   error on a non-2xx status, never on "email not found".
+> - `POST {base}/verify {email, code}` → `{ accessToken, refreshToken, expiresIn }` (200) on success,
+>   or 400 `{ error }` on invalid/expired code. There is NO `{ ok, token }` shape and NO `ok` field on
+>   success — success is signalled by HTTP 200 + presence of `accessToken`.
+>
+> The WEB endpoints (`/api/auth/send-code`, `/api/auth/verify`) are deliberately NOT used: their verify
+> sets MCloud's cookie server-side and is documented same-origin-only, unusable cross-origin from
+> spiritb.uk. The `x-spiritbulb-secret` header is forward-compatible only: MCloud's mobile send-code/verify
+> are currently unauthenticated (the code is the credential), so the header is ignored today but harmless.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -283,7 +290,7 @@ import { requestCode, verifyCode } from "@/lib/auth/mcloud-client";
 const realFetch = global.fetch;
 
 beforeEach(() => {
-  process.env.MCLOUD_AUTH_BASE = "https://mcloud.co.ke/api/auth";
+  process.env.MCLOUD_AUTH_BASE = "https://mcloud.co.ke/api/mobile/auth";
 });
 afterEach(() => {
   global.fetch = realFetch;
@@ -299,6 +306,18 @@ describe("requestCode", () => {
     expect(res.ok).toBe(true);
   });
 
+  it("calls the send-code endpoint", async () => {
+    const spy = vi.fn(async () =>
+      new Response(JSON.stringify({ ok: true }), { status: 200 })
+    );
+    global.fetch = spy as unknown as typeof fetch;
+    await requestCode("a@b.com");
+    expect(spy).toHaveBeenCalledWith(
+      "https://mcloud.co.ke/api/mobile/auth/send-code",
+      expect.anything()
+    );
+  });
+
   it("returns an error on non-200", async () => {
     global.fetch = vi.fn(async () =>
       new Response(JSON.stringify({ error: "rate limited" }), { status: 429 })
@@ -310,21 +329,39 @@ describe("requestCode", () => {
 });
 
 describe("verifyCode", () => {
-  it("returns a token on success", async () => {
+  it("returns tokens on success (200 + accessToken)", async () => {
     global.fetch = vi.fn(async () =>
-      new Response(JSON.stringify({ ok: true, token: "tok_123" }), { status: 200 })
+      new Response(
+        JSON.stringify({ accessToken: "at_123", refreshToken: "rt_456", expiresIn: 3600 }),
+        { status: 200 }
+      )
     ) as unknown as typeof fetch;
     const res = await verifyCode("a@b.com", "000000");
     expect(res.ok).toBe(true);
-    expect(res.token).toBe("tok_123");
+    expect(res.accessToken).toBe("at_123");
+    expect(res.refreshToken).toBe("rt_456");
+    expect(res.expiresIn).toBe(3600);
   });
 
-  it("fails a bad code", async () => {
+  it("calls the verify endpoint", async () => {
+    const spy = vi.fn(async () =>
+      new Response(JSON.stringify({ accessToken: "at_123" }), { status: 200 })
+    );
+    global.fetch = spy as unknown as typeof fetch;
+    await verifyCode("a@b.com", "000000");
+    expect(spy).toHaveBeenCalledWith(
+      "https://mcloud.co.ke/api/mobile/auth/verify",
+      expect.anything()
+    );
+  });
+
+  it("fails a bad code (400)", async () => {
     global.fetch = vi.fn(async () =>
-      new Response(JSON.stringify({ error: "invalid code" }), { status: 401 })
+      new Response(JSON.stringify({ error: "invalid code" }), { status: 400 })
     ) as unknown as typeof fetch;
     const res = await verifyCode("a@b.com", "999999");
     expect(res.ok).toBe(false);
+    expect(res.accessToken).toBeUndefined();
   });
 });
 ```
@@ -357,7 +394,9 @@ export async function requestCode(
   email: string
 ): Promise<{ ok: boolean; error?: string }> {
   try {
-    const res = await fetch(`${base()}/request-code`, {
+    // MCloud mobile send-code: always 200 { ok: true } even for unknown emails
+    // (anti-enumeration). Only a non-2xx (429 rate limit, 400 malformed) is an error.
+    const res = await fetch(`${base()}/send-code`, {
       method: "POST",
       headers: headers(),
       body: JSON.stringify({ email }),
@@ -375,18 +414,31 @@ export async function requestCode(
 export async function verifyCode(
   email: string,
   code: string
-): Promise<{ ok: boolean; token?: string; error?: string }> {
+): Promise<{
+  ok: boolean;
+  accessToken?: string;
+  refreshToken?: string;
+  expiresIn?: number;
+  error?: string;
+}> {
   try {
-    const res = await fetch(`${base()}/verify-code`, {
+    // MCloud mobile verify: 200 { accessToken, refreshToken, expiresIn } on success,
+    // 400 { error } on bad/expired code. Success is HTTP 200 + an accessToken.
+    const res = await fetch(`${base()}/verify`, {
       method: "POST",
       headers: headers(),
       body: JSON.stringify({ email, code }),
     });
     const d = await res.json().catch(() => null);
-    if (!res.ok) {
+    if (!res.ok || !d?.accessToken) {
       return { ok: false, error: d?.error ?? "That code did not work. Please try again." };
     }
-    return { ok: true, token: d?.token };
+    return {
+      ok: true,
+      accessToken: d.accessToken,
+      refreshToken: d.refreshToken,
+      expiresIn: d.expiresIn,
+    };
   } catch {
     return { ok: false, error: "Network error. Please try again." };
   }
@@ -526,7 +578,7 @@ git commit -m "feat: request-code api route"
 
 **Interfaces:**
 - Consumes: `verifyCode` from `@/lib/auth/mcloud-client`; `SESSION_COOKIE` from `@/lib/auth/session`.
-- Produces: `POST /api/auth/verify-code` accepting `{ email, code }`. On success sets an httpOnly `sb_session` cookie to the returned token and responds `{ success: true }`. On failure responds `{ error }` with 400/401.
+- Produces: `POST /api/auth/verify-code` accepting `{ email, code }`. On success sets an httpOnly `sb_session` cookie to the returned **accessToken** and responds `{ success: true }`. On failure responds `{ error }` with 400/401.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -535,7 +587,7 @@ git commit -m "feat: request-code api route"
 import { describe, it, expect, vi, afterEach } from "vitest";
 
 vi.mock("@/lib/auth/mcloud-client", () => ({
-  verifyCode: vi.fn(async () => ({ ok: true, token: "tok_abc" })),
+  verifyCode: vi.fn(async () => ({ ok: true, accessToken: "at_abc", refreshToken: "rt_abc", expiresIn: 3600 })),
 }));
 
 import { POST } from "@/app/api/auth/verify-code/route";
@@ -555,7 +607,7 @@ describe("verify-code route", () => {
     const res = await POST(req({ email: "a@b.com", code: "000000" }) as never);
     expect(res.status).toBe(200);
     const setCookie = res.headers.get("set-cookie") ?? "";
-    expect(setCookie).toContain("sb_session=tok_abc");
+    expect(setCookie).toContain("sb_session=at_abc");
     expect(setCookie.toLowerCase()).toContain("httponly");
   });
 
@@ -599,11 +651,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Email and code are required" }, { status: 400 });
   }
   const result = await verifyCode(email, code);
-  if (!result.ok || !result.token) {
+  if (!result.ok || !result.accessToken) {
     return NextResponse.json({ error: result.error ?? "That code did not work." }, { status: 401 });
   }
   const res = NextResponse.json({ success: true });
-  res.cookies.set(SESSION_COOKIE, result.token, {
+  res.cookies.set(SESSION_COOKIE, result.accessToken, {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
@@ -1113,8 +1165,10 @@ git commit -m "chore: canonical domain spiritb.uk in homepage metadata"
 
 Create/append `.env.example`:
 ```
-# MCloud auth API (server-to-server; do NOT prefix NEXT_PUBLIC)
-MCLOUD_AUTH_BASE=https://mcloud.co.ke/api/auth
+# MCloud MOBILE auth API (server-to-server; do NOT prefix NEXT_PUBLIC).
+# Mobile variant returns tokens in the body (usable cross-origin); the web
+# variant sets a same-origin-only cookie and is NOT usable from spiritb.uk.
+MCLOUD_AUTH_BASE=https://mcloud.co.ke/api/mobile/auth
 MCLOUD_AUTH_SECRET=
 ```
 
