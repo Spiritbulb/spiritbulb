@@ -38,14 +38,22 @@ export default function Header() {
                     />
                 </Link>
 
-                {/* Theme toggle */}
-                <button
-                    onClick={toggleDarkMode}
-                    aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-                    className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                >
-                    {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                </button>
+                {/* Right side: sign in + theme toggle */}
+                <div className="flex items-center gap-2">
+                    <Link
+                        href="/login"
+                        className="rounded-md px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+                    >
+                        Sign in
+                    </Link>
+                    <button
+                        onClick={toggleDarkMode}
+                        aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+                        className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                    >
+                        {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                    </button>
+                </div>
 
             </div>
         </header>
