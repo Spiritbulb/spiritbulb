@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE, hasSession } from "@/lib/auth/session";
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const session = req.cookies.get(SESSION_COOKIE)?.value;
   if (hasSession(session)) return NextResponse.next();
 

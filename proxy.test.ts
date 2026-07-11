@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { NextRequest } from "next/server";
-import { middleware } from "@/middleware";
+import { proxy } from "@/proxy";
 import { SESSION_COOKIE } from "@/lib/auth/session";
 
 function reqFor(url: string, cookie?: string) {
@@ -11,7 +11,7 @@ function reqFor(url: string, cookie?: string) {
 
 describe("home gate middleware", () => {
   it("redirects unauthenticated /home to /login with next", () => {
-    const res = middleware(reqFor("http://localhost/home?app=nuru"));
+    const res = proxy(reqFor("http://localhost/home?app=nuru"));
     expect(res.status).toBe(307);
     const loc = res.headers.get("location")!;
     expect(loc).toContain("/login");
@@ -19,13 +19,13 @@ describe("home gate middleware", () => {
   });
 
   it("lets an authenticated request through", () => {
-    const res = middleware(reqFor("http://localhost/home?app=nuru", "tok_abc"));
+    const res = proxy(reqFor("http://localhost/home?app=nuru", "tok_abc"));
     // NextResponse.next() has no redirect location
     expect(res.headers.get("location")).toBeNull();
   });
 
   it("preserves all query params of a multi-param deep link in next", () => {
-    const res = middleware(
+    const res = proxy(
       reqFor("http://localhost/home?app=nuru&ref=abc")
     );
     expect(res.status).toBe(307);
