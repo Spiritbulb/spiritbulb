@@ -5,6 +5,7 @@ const realFetch = global.fetch;
 
 beforeEach(() => {
   process.env.MCLOUD_AUTH_BASE = "https://mcloud.co.ke/api/partner/auth";
+  process.env.PARTNER_AUTH_SECRET = "test-secret";
 });
 afterEach(() => {
   global.fetch = realFetch;
@@ -30,6 +31,28 @@ describe("requestCode", () => {
       "https://mcloud.co.ke/api/partner/auth/send-code",
       expect.anything()
     );
+  });
+
+  it("sends the x-partner-secret header (partner routes are secret-gated)", async () => {
+    const spy = vi.fn(
+      async (_url: string, _init?: RequestInit) =>
+        new Response(JSON.stringify({ ok: true }), { status: 200 })
+    );
+    global.fetch = spy as unknown as typeof fetch;
+    await requestCode("a@b.com");
+    const init = spy.mock.calls[0][1];
+    const sent = init?.headers as Record<string, string> | undefined;
+    expect(sent?.["x-partner-secret"]).toBe("test-secret");
+  });
+
+  it("fails when PARTNER_AUTH_SECRET is unset (no silent unauthenticated call)", async () => {
+    delete process.env.PARTNER_AUTH_SECRET;
+    const spy = vi.fn();
+    global.fetch = spy as unknown as typeof fetch;
+    const res = await requestCode("a@b.com");
+    expect(res.ok).toBe(false);
+    // must not have called MCloud at all without the secret
+    expect(spy).not.toHaveBeenCalled();
   });
 
   it("returns an error on non-200", async () => {
