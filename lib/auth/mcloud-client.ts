@@ -8,8 +8,8 @@ function base(): string {
 
 function headers(): Record<string, string> {
   const h: Record<string, string> = { "Content-Type": "application/json" };
-  const secret = process.env.MCLOUD_AUTH_SECRET;
-  if (secret) h["x-spiritbulb-secret"] = secret;
+  const secret = process.env.PARTNER_AUTH_SECRET;
+  if (secret) h["x-partner-secret"] = secret;
   return h;
 }
 

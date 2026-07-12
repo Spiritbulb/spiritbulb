@@ -1,8 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { safeNext } from "@/lib/auth/intent";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
+type Status = 'idle' | 'submitting' | 'success' | 'error';
+
+const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 export default function LoginClient() {
   const params = useSearchParams();
@@ -12,9 +16,17 @@ export default function LoginClient() {
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [token, setToken] = useState('');
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   async function sendCode(e: React.FormEvent) {
     e.preventDefault();
+    if (!token) {
+      setError('Please complete the verification challenge.');
+
+      return;
+    }
+
     setBusy(true);
     setError(null);
     const res = await fetch("/api/auth/request-code", {
@@ -26,6 +38,9 @@ export default function LoginClient() {
     if (!res.ok) {
       const d = await res.json().catch(() => null);
       setError(d?.error ?? "Could not send a code. Please try again.");
+      // Token is single-use — reset the widget so the user can retry.
+      turnstileRef.current?.reset();
+      setToken('');
       return;
     }
     setStep("code");
@@ -69,7 +84,20 @@ export default function LoginClient() {
               placeholder="you@example.com"
               className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
             />
-            <Button type="submit" size="lg" className="w-full" disabled={busy}>
+
+            {SITE_KEY && (
+              <Turnstile
+                ref={turnstileRef}
+                siteKey={SITE_KEY}
+                onSuccess={(t) => {
+                  setToken(t);
+                }}
+                onExpire={() => setToken('')}
+                onError={() => setToken('')}
+                options={{ theme: 'auto' }}
+              />
+            )}
+            <Button type="submit" size="lg" className="w-full" disabled={busy || (!!SITE_KEY && !token)}>
               {busy ? "Sending" : "Send code"}
             </Button>
           </form>

@@ -4,7 +4,7 @@ import { requestCode, verifyCode } from "@/lib/auth/mcloud-client";
 const realFetch = global.fetch;
 
 beforeEach(() => {
-  process.env.MCLOUD_AUTH_BASE = "https://mcloud.co.ke/api/mobile/auth";
+  process.env.MCLOUD_AUTH_BASE = "https://mcloud.co.ke/api/partner/auth";
 });
 afterEach(() => {
   global.fetch = realFetch;
@@ -27,7 +27,7 @@ describe("requestCode", () => {
     global.fetch = spy as unknown as typeof fetch;
     await requestCode("a@b.com");
     expect(spy).toHaveBeenCalledWith(
-      "https://mcloud.co.ke/api/mobile/auth/send-code",
+      "https://mcloud.co.ke/api/partner/auth/send-code",
       expect.anything()
     );
   });
@@ -64,7 +64,7 @@ describe("verifyCode", () => {
     global.fetch = spy as unknown as typeof fetch;
     await verifyCode("a@b.com", "000000");
     expect(spy).toHaveBeenCalledWith(
-      "https://mcloud.co.ke/api/mobile/auth/verify",
+      "https://mcloud.co.ke/api/partner/auth/verify",
       expect.anything()
     );
   });
