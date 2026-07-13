@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { safeNext } from "@/lib/auth/intent";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
+import LotusMark from "@/components/LotusMark";
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
@@ -68,9 +69,10 @@ export default function LoginClient() {
     <main className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm space-y-6">
         <div className="space-y-2 text-center">
+          <LotusMark />
           <h1 className="text-2xl font-bold tracking-tight">Sign in to Spiritbulb</h1>
           <p className="text-sm text-muted-foreground">
-            One login opens all four products.
+           We&apos;ll send you a one-time code to your email address.
           </p>
         </div>
 
@@ -94,7 +96,9 @@ export default function LoginClient() {
                 }}
                 onExpire={() => setToken('')}
                 onError={() => setToken('')}
-                options={{ theme: 'auto' }}
+                // 'flexible' lets the widget fill its container, so it lines up
+                // with the input and button instead of sitting at a fixed 300px.
+                options={{ theme: 'auto', size: 'flexible' }}
               />
             )}
             <Button type="submit" size="lg" className="w-full" disabled={busy || (!!SITE_KEY && !token)}>

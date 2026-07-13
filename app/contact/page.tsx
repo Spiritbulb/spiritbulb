@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Mail, Send, Loader2, CheckCircle2 } from "lucide-react";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
+import LotusMark from "@/components/LotusMark";
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -74,7 +75,18 @@ export default function ContactPage() {
 
     return (
         <main className="min-h-screen bg-background">
-            <section className="mx-auto w-full max-w-xl px-4 py-20">
+            <section className="mx-auto w-full max-w-md px-6 py-10">
+                <div className="flex flex-col items-center gap-4">
+                    <LotusMark />
+                <h1 className="mt-6 text-center text-4xl font-bold tracking-tight">
+                    Contact Spiritbulb
+                </h1>
+                <p className="mt-2 text-center text-lg text-muted-foreground">
+                    We&apos;d love to hear from you! Please fill out the form below and we&apos;ll get back to you as soon as possible.
+                </p>
+                </div>
+
+                <div className="mt-10">
                 <div className="mb-8 flex items-center gap-3">
                     <Mail className="size-6 text-primary" />
                     <h1 className="text-2xl font-semibold tracking-tight">Get in touch</h1>
@@ -162,7 +174,9 @@ export default function ContactPage() {
                                 }}
                                 onExpire={() => setToken('')}
                                 onError={() => setToken('')}
-                                options={{ theme: 'auto' }}
+                                // 'flexible' lets the widget fill its container, so it lines
+                                // up with the fields instead of sitting at a fixed 300px.
+                                options={{ theme: 'auto', size: 'flexible' }}
                             />
                         )}
 
@@ -189,6 +203,7 @@ export default function ContactPage() {
                         </Button>
                     </form>
                 )}
+                </div>
             </section>
         </main>
     );

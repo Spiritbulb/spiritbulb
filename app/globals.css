@@ -247,6 +247,26 @@ body {
   line-height: 1.6;
 }
 
+/* ============================================
+   THEME-SWAPPED LOGOS
+   The product wordmarks only exist as light/dark PNGs. Picking one in JS means
+   the server renders the wrong variant and it flips after hydration, so both
+   are rendered and CSS shows the right one. No JS, no flash.
+   ============================================ */
+.logo-dark {
+  display: none;
+}
+
+:root.dark .logo-light,
+:root[data-theme="dark"] .logo-light {
+  display: none;
+}
+
+:root.dark .logo-dark,
+:root[data-theme="dark"] .logo-dark {
+  display: block;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {

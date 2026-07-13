@@ -1,22 +1,34 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
 import EcosystemHero from "@/components/EcosystemHero";
 
-function useDarkMode() {
-    const [dark, setDark] = useState(() =>
-        typeof document !== "undefined" && document.documentElement.classList.contains("dark")
+/**
+ * A wordmark that only exists as separate light and dark PNGs. Both are
+ * rendered and CSS reveals the right one, so the server and the client always
+ * agree and the logo never flashes the wrong variant.
+ *
+ * Decorative: each section already carries the product name in its heading, so
+ * announcing the logo too would just say the name twice.
+ */
+function ThemedLogo({
+    light,
+    dark,
+    className = "",
+}: {
+    light: string;
+    dark: string;
+    className?: string;
+}) {
+    return (
+        <span aria-hidden className="block">
+            <img src={light} alt="" className={`logo-light ${className}`} loading="lazy" />
+            <img src={dark} alt="" className={`logo-dark ${className}`} loading="lazy" />
+        </span>
     );
-    useEffect(() => {
-        const check = () => setDark(document.documentElement.classList.contains("dark"));
-        const observer = new MutationObserver(check);
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-        return () => observer.disconnect();
-    }, []);
-    return dark;
 }
 
 function Section({
@@ -42,9 +54,6 @@ function Section({
 
 export default function HomePage() {
     const router = useRouter();
-    const dark = useDarkMode();
-    const reachSrc = dark ? "/reach-w.png" : "/reach.png";
-    const tufikeSrc = dark ? "/tufike-w.png" : "/tufike.png";
 
     return (
         <main className="min-h-screen bg-background">
@@ -113,10 +122,12 @@ export default function HomePage() {
             <Section id="reach" aria-labelledby="reach-heading">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-start">
                     <div className="space-y-6">
-                        <img src={reachSrc} alt="Reach" className="h-8 w-auto" loading="lazy" />
-                        <h2 id="reach-heading" className="text-2xl font-bold md:text-4xl tracking-tight">
-                            Reach
-                        </h2>
+                        {/* The wordmark is the heading. The h2 stays for the heading
+                            outline and for screen readers, which cannot read a logo. */}
+                        <div>
+                            <h2 id="reach-heading" className="sr-only">Reach</h2>
+                            <ThemedLogo light="/reach.png" dark="/reach-w.png" className="h-11 w-auto" />
+                        </div>
                         <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
                             <p>13 merchants. Over KSH 250k listed in under a month. No billboards, just word of mouth.</p>
                             <p>Reach manages social media and fulfillment integrations for merchants and NGOs across Kenya.</p>
@@ -143,10 +154,10 @@ export default function HomePage() {
                         <img src="/tufike.svg" alt="Tufike" className="w-full h-auto" loading="eager" />
                     </div>
                     <div className="space-y-6">
-                        <img src={tufikeSrc} alt="Tufike" className="h-8 w-auto" loading="lazy" />
-                        <h2 id="tufike-heading" className="text-2xl font-bold md:text-4xl tracking-tight">
-                            Tufike
-                        </h2>
+                        <div>
+                            <h2 id="tufike-heading" className="sr-only">Tufike</h2>
+                            <ThemedLogo light="/tufike.png" dark="/tufike-w.png" className="h-11 w-auto" />
+                        </div>
                         <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
                             <p>Still early, and the demand is already loud. Community events, pop-up style, places you'd actually show up.</p>
                             <p>Tufike manages brand exposure and venues, done differently.</p>

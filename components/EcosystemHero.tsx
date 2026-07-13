@@ -2,12 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Highlighter } from "@/components/ui/highlighter";
+import LotusMark from "@/components/LotusMark";
 
 export default function EcosystemHero() {
   return (
     <section className="w-full overflow-hidden pt-12 md:pt-20 py-16 md:py-20">
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div className="space-y-8 lg:order-1">
             <div className="space-y-4">
               <h1 className="text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">
@@ -31,9 +32,8 @@ export default function EcosystemHero() {
               </Button>
             </div>
           </div>
-          <div className="relative lg:order-2 hidden lg:block">
-            {/* Approach-B seam: the interactive five-leaf lotus replaces this image later. */}
-            <img src="/future.svg" alt="That's the spirit" className="w-full h-auto" loading="eager" />
+          <div className="relative lg:order-2 hidden lg:flex justify-center">
+            <LotusMark className="w-full max-w-[380px]" />
           </div>
         </div>
       </div>
