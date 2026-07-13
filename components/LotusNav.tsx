@@ -64,9 +64,10 @@ export const LEAVES: Leaf[] = [
     color: "#E0A030",
     status: "preview",
     lit: false,
+    href: "/reach",
     blurb:
       "Storefronts and fulfilment for Kenyan merchants. Live for 13 merchants in Nakuru, but not on the web yet.",
-    action: "Opens here when the web view is ready",
+    action: "Read about Reach",
   },
   {
     id: "mcloud",
@@ -86,8 +87,9 @@ export const LEAVES: Leaf[] = [
     color: "#D6453D",
     status: "soon",
     lit: false,
+    href: "/tufike",
     blurb: "Community events and venues, pop-up style. Still being built.",
-    action: "Opens here when it is ready",
+    action: "Join the waitlist",
   },
 ];
 

@@ -1,11 +1,21 @@
-import type { Metadata } from 'next'
-import NuruClient from './nuru-client'
+import type { Metadata } from "next";
+import ProductPage from "@/components/ProductPage";
+import { bySlug, productJsonLd, productMetadata } from "@/lib/products";
 
-export const metadata: Metadata = {
-    title: 'Join the Nuru Beta — Spiritbulb',
-    description: 'Get early access to Nuru, the study companion that chats with your notes. Join the closed Android beta.',
-}
+const product = bySlug("nuru");
+
+export const metadata: Metadata = productMetadata(product);
 
 export default function Page() {
-    return <NuruClient />
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productJsonLd(product)),
+        }}
+      />
+      <ProductPage product={product} />
+    </>
+  );
 }

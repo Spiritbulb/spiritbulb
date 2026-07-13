@@ -29,14 +29,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://www.spiritbulb.org'),
+  metadataBase: new URL('https://spiritb.uk'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_KE',
-    url: 'https://www.spiritbulb.org',
+    url: 'https://spiritb.uk',
     siteName: 'Spiritbulb',
     title: "Smarter systems for Kenya | Spiritbulb",
     description: "Kenyan tech enterprise building the future of commerce, community, and education through Reach, Tufike, Nuru, and Menengai Cloud.",
@@ -76,8 +76,8 @@ const jsonLd = {
   '@type': 'Organization',
   name: 'Spiritbulb',
   alternateName: 'Spiritbulb Kenya',
-  url: 'https://www.spiritbulb.org',
-  logo: 'https://www.spiritbulb.org/logo.png',
+  url: 'https://spiritb.uk',
+  logo: 'https://spiritb.uk/logo-sb.png',
   sameAs: [
     'https://twitter.com/spiritbulb',
     'https://www.facebook.com/spiritbulb',

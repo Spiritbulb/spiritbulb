@@ -9,6 +9,13 @@ function reqFor(url: string, cookie?: string) {
   return r;
 }
 
+/** A request as it would arrive at a given host, which is what routes it. */
+function reqAt(host: string, path = "/") {
+  return new NextRequest(new URL(path, `https://${host}`), {
+    headers: { host },
+  });
+}
+
 describe("home gate middleware", () => {
   it("redirects unauthenticated /home to /login with next", () => {
     const res = proxy(reqFor("http://localhost/home?app=nuru"));
@@ -32,5 +39,39 @@ describe("home gate middleware", () => {
     const loc = res.headers.get("location")!;
     const next = new URL(loc).searchParams.get("next");
     expect(next).toBe("/home?app=nuru&ref=abc");
+  });
+});
+
+describe("product subdomains", () => {
+  it("serves the product page at the root of its subdomain", () => {
+    const res = proxy(reqAt("nuru.spiritb.uk", "/"));
+    // A rewrite keeps the visitor's URL and serves another path.
+    expect(res.headers.get("location")).toBeNull();
+    expect(res.headers.get("x-middleware-rewrite")).toContain("/nuru");
+  });
+
+  it("redirects the path form to the subdomain, so there is one indexable URL", () => {
+    for (const slug of ["nuru", "reach", "tufike", "mcloud"]) {
+      const res = proxy(reqAt("spiritb.uk", `/${slug}`));
+      expect(res.status).toBe(308);
+      expect(res.headers.get("location")).toBe(`https://${slug}.spiritb.uk/`);
+    }
+  });
+
+  it("does not leave the same page reachable at two URLs on one subdomain", () => {
+    const res = proxy(reqAt("nuru.spiritb.uk", "/nuru"));
+    expect(res.status).toBe(308);
+    expect(res.headers.get("location")).toBe("https://nuru.spiritb.uk/");
+  });
+
+  it("leaves non-product paths on the root domain alone", () => {
+    const res = proxy(reqAt("spiritb.uk", "/contact"));
+    expect(res.headers.get("location")).toBeNull();
+    expect(res.headers.get("x-middleware-rewrite")).toBeNull();
+  });
+
+  it("does not treat an unknown subdomain as a product", () => {
+    const res = proxy(reqAt("blog.spiritb.uk", "/"));
+    expect(res.headers.get("x-middleware-rewrite")).toBeNull();
   });
 });
