@@ -108,6 +108,15 @@ const jsonLd = {
     name: 'Stephanie Kanji',
   }],
   numberOfEmployees: '10-50',
+  // The four products of the ecosystem. Menengai Cloud carries its own site so
+  // Google connects the two entities (its Organization JSON-LD names Spiritbulb
+  // as parentOrganization; this is the reciprocal link).
+  subOrganization: [
+    { '@type': 'Organization', name: 'Menengai Cloud', url: 'https://mcloud.co.ke' },
+    { '@type': 'Organization', name: 'Nuru' },
+    { '@type': 'Organization', name: 'Reach' },
+    { '@type': 'Organization', name: 'Tufike' },
+  ],
   slogan: '#ThatsTheSpirit',
 };
 
