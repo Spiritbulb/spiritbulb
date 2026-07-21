@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Sun, Moon } from 'lucide-react';
 
-export default function Header() {
+export default function Header({ signedIn = false }: { signedIn?: boolean }) {
     // The theme is already applied to <html> by the pre-hydration script in the
     // layout, and which icon/logo shows is decided in CSS. So nothing here reads
     // the theme during render, which is what used to cause the hydration
@@ -25,14 +25,37 @@ export default function Header() {
                     <img src="/logo-w.png" alt="" className="logo-dark h-7 w-auto" />
                 </Link>
 
-                {/* Right side: sign in + theme toggle */}
+                {/* Right side: auth actions + theme toggle. Signed-in shows Home +
+                    Sign out; signed-out shows Sign in. `signedIn` comes from the
+                    server layout (a cookie presence check), so this only reflects
+                    session state, it does not enforce it. */}
                 <div className="flex items-center gap-2">
-                    <Link
-                        href="/login"
-                        className="rounded-md px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-                    >
-                        Sign in
-                    </Link>
+                    {signedIn ? (
+                        <>
+                            <Link
+                                href="/home"
+                                className="rounded-md px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+                            >
+                                Home
+                            </Link>
+                            {/* POST so a prefetch/crawler can't sign the user out. */}
+                            <form action="/api/auth/logout" method="post">
+                                <button
+                                    type="submit"
+                                    className="rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                                >
+                                    Sign out
+                                </button>
+                            </form>
+                        </>
+                    ) : (
+                        <Link
+                            href="/login"
+                            className="rounded-md px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+                        >
+                            Sign in
+                        </Link>
+                    )}
                     <button
                         onClick={toggleDarkMode}
                         aria-label="Switch theme"
