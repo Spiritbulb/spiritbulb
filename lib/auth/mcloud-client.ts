@@ -43,6 +43,30 @@ export async function requestCode(
   }
 }
 
+export async function requestHandoff(
+  tokens: { accessToken: string; refreshToken: string },
+  redirectTo: string
+): Promise<{ ok: boolean; url?: string; error?: string }> {
+  try {
+    // MCloud partner handoff: 200 { url } with a single-use redeem URL on success,
+    // 401/429/400 { error } otherwise. redirect: "error" — a 30x would drop the
+    // x-partner-secret header (see requestCode).
+    const res = await fetch(`${base()}/handoff`, {
+      method: "POST",
+      headers: headers(),
+      body: JSON.stringify({ ...tokens, redirectTo }),
+      redirect: "error",
+    });
+    const d = await res.json().catch(() => null);
+    if (!res.ok || !d?.url) {
+      return { ok: false, error: d?.error ?? "Could not start the handoff. Please try again." };
+    }
+    return { ok: true, url: d.url };
+  } catch {
+    return { ok: false, error: "Network error. Please try again." };
+  }
+}
+
 export async function verifyCode(
   email: string,
   code: string
