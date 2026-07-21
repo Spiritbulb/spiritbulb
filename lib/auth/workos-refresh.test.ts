@@ -21,7 +21,7 @@ describe("refreshWorkOSTokens", () => {
   });
 
   it("posts to the WorkOS token endpoint with grant_type=refresh_token", async () => {
-    const spy = vi.fn(async () =>
+    const spy = vi.fn(async (_url: RequestInfo | URL, _init?: RequestInit) =>
       new Response(JSON.stringify({ access_token: "a", refresh_token: "r", expires_in: 300 }), { status: 200 }),
     );
     global.fetch = spy as unknown as typeof fetch;

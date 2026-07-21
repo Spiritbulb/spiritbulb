@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { SESSION_COOKIE, hasSession } from "@/lib/auth/session";
+import { SESSION_COOKIE, getSession } from "@/lib/auth/session";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -127,10 +127,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Presence check only — same signal proxy.ts already gates on. This drives
-  // what the nav DISPLAYS, not what it protects (proxy.ts is the boundary), so
-  // a stale cookie showing "signed in" at worst bounces the user at /home.
-  const signedIn = hasSession((await cookies()).get(SESSION_COOKIE)?.value);
+  // Verified session (decrypt + refresh-if-lapsed), so the nav agrees with the
+  // /home gate. We only need the boolean here; the /home route handles reseal.
+  const signedIn = (await getSession((await cookies()).get(SESSION_COOKIE)?.value)) !== null;
   return (
     // suppressHydrationWarning: the script below sets data-theme/class on <html>
     // before React hydrates, which is deliberate and is what this prop is for.
