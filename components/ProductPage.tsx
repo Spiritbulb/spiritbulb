@@ -188,7 +188,20 @@ export default function ProductPage({ product }: { product: Product }) {
         </FadeIn>
 
         <FadeIn delay={0.1} className="mt-10">
-          {product.external ? (
+          {product.slug === "mcloud" ? (
+            // MCloud is the one product we can hand a session to. Route through
+            // /go/mcloud (same tab, so cookies travel): signed-in visitors land
+            // in MCloud already authed via the handoff, signed-out ones go to
+            // MCloud's login. Not target="_blank" and not the raw external href.
+            <a
+              href="/go/mcloud?to=/"
+              className="inline-flex h-11 items-center gap-2 rounded-xl px-6 text-[14px] font-medium text-background transition-opacity hover:opacity-90"
+              style={{ backgroundColor: product.color }}
+            >
+              {product.external?.label ?? "Go to MCloud"}
+              <ArrowUpRight className="h-4 w-4" />
+            </a>
+          ) : product.external ? (
             <a
               href={product.external.href}
               target="_blank"

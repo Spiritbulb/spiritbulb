@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { requestCode, verifyCode } from "@/lib/auth/mcloud-client";
+import { requestCode, verifyCode, requestHandoff } from "@/lib/auth/mcloud-client";
 
 const realFetch = global.fetch;
 
@@ -99,5 +99,51 @@ describe("verifyCode", () => {
     const res = await verifyCode("a@b.com", "999999");
     expect(res.ok).toBe(false);
     expect(res.accessToken).toBeUndefined();
+  });
+});
+
+describe("requestHandoff", () => {
+  it("returns the handoff url on success", async () => {
+    global.fetch = vi.fn(async () =>
+      new Response(
+        JSON.stringify({ url: "https://mcloud.co.ke/auth/handoff?ticket=abc" }),
+        { status: 200 }
+      )
+    ) as unknown as typeof fetch;
+    const res = await requestHandoff({ accessToken: "at", refreshToken: "rt" }, "/onboarding");
+    expect(res.ok).toBe(true);
+    expect(res.url).toContain("/auth/handoff?ticket=");
+  });
+
+  it("calls the handoff endpoint with the partner secret and tokens", async () => {
+    const spy = vi.fn(async (_url: RequestInfo | URL, _init?: RequestInit) =>
+      new Response(JSON.stringify({ url: "https://x/auth/handoff?ticket=abc" }), { status: 200 })
+    );
+    global.fetch = spy as unknown as typeof fetch;
+    await requestHandoff({ accessToken: "at", refreshToken: "rt" }, "/x");
+    const [url, init] = spy.mock.calls[0];
+    expect(String(url)).toBe("https://mcloud.co.ke/api/partner/auth/handoff");
+    const headers = init?.headers as Record<string, string>;
+    expect(headers["x-partner-secret"]).toBe("test-secret");
+    const body = String(init?.body);
+    expect(body).toContain("at");
+    expect(body).toContain("rt");
+    expect(body).toContain("/x");
+  });
+
+  it("returns not-ok on a non-2xx", async () => {
+    global.fetch = vi.fn(async () =>
+      new Response(JSON.stringify({ error: "no" }), { status: 401 })
+    ) as unknown as typeof fetch;
+    const res = await requestHandoff({ accessToken: "at", refreshToken: "rt" }, "/x");
+    expect(res.ok).toBe(false);
+  });
+
+  it("returns not-ok when the response has no url", async () => {
+    global.fetch = vi.fn(async () =>
+      new Response(JSON.stringify({}), { status: 200 })
+    ) as unknown as typeof fetch;
+    const res = await requestHandoff({ accessToken: "at", refreshToken: "rt" }, "/x");
+    expect(res.ok).toBe(false);
   });
 });
