@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyCode } from "@/lib/auth/mcloud-client";
-import { SESSION_COOKIE } from "@/lib/auth/session";
+import { SESSION_COOKIE, sessionCookieOptions } from "@/lib/auth/session";
+import { sealSession } from "@/lib/auth/session-crypto";
 
 export async function POST(req: NextRequest) {
   let body: { email?: string; code?: string };
@@ -15,16 +16,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Email and code are required" }, { status: 400 });
   }
   const result = await verifyCode(email, code);
-  if (!result.ok || !result.accessToken) {
+  if (!result.ok || !result.accessToken || !result.refreshToken) {
     return NextResponse.json({ error: result.error ?? "That code did not work." }, { status: 401 });
   }
-  const res = NextResponse.json({ success: true });
-  res.cookies.set(SESSION_COOKIE, result.accessToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 30,
+  // Seal the FULL token set so getSession can refresh later. expiresIn is
+  // seconds; store an absolute epoch-ms deadline.
+  const sealed = await sealSession({
+    accessToken: result.accessToken,
+    refreshToken: result.refreshToken,
+    expiresAt: Date.now() + (result.expiresIn ?? 0) * 1000,
   });
+  const res = NextResponse.json({ success: true });
+  res.cookies.set(SESSION_COOKIE, sealed, sessionCookieOptions());
   return res;
 }
