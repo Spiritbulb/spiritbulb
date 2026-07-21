@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SESSION_COOKIE, hasSession } from "@/lib/auth/session";
+import { SESSION_COOKIE, getSession, sessionCookieOptions } from "@/lib/auth/session";
 
 /** Products served from their own subdomain. Keep in step with lib/products.ts. */
 const PRODUCT_SLUGS = ["nuru", "reach", "tufike", "mcloud"] as const;
@@ -18,7 +18,7 @@ function productFromHost(host: string): Slug | null {
     : null;
 }
 
-export function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const host = req.headers.get("host") ?? "";
   const { pathname, search } = req.nextUrl;
   const slug = productFromHost(host);
@@ -49,15 +49,22 @@ export function proxy(req: NextRequest) {
     }
   }
 
-  // The hub is the only thing behind a session.
+  // The hub is the only thing behind a session. Verify (decrypt + refresh),
+  // do not merely check the cookie exists.
   if (pathname === "/home" || pathname.startsWith("/home/")) {
-    const session = req.cookies.get(SESSION_COOKIE)?.value;
-    if (!hasSession(session)) {
+    const session = await getSession(req.cookies.get(SESSION_COOKIE)?.value);
+    if (!session) {
       const url = req.nextUrl.clone();
       url.pathname = "/login";
       url.search = "";
       url.searchParams.set("next", pathname + search);
       return NextResponse.redirect(url);
+    }
+    // If the session was refreshed mid-request, write the new blob back.
+    if (session.resealed) {
+      const res = NextResponse.next();
+      res.cookies.set(SESSION_COOKIE, session.resealed, sessionCookieOptions());
+      return res;
     }
   }
 
