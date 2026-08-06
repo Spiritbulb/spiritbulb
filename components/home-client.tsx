@@ -79,7 +79,7 @@ export default function HomePage() {
                             ))}
                         </div>
                         <Button className="gap-2" asChild>
-                            <a href="https://mcloud.co.ke" target="_blank" rel="noopener noreferrer">
+                            <a href="/go/mcloud" target="_blank" rel="noopener noreferrer">
                                 Claim your free app <ExternalLink className="h-4 w-4" />
                             </a>
                         </Button>

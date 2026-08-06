@@ -75,7 +75,7 @@ export const LEAVES: Leaf[] = [
     color: "#38B6FF",
     status: "live",
     lit: true,
-    href: "https://mcloud.co.ke",
+    href: "/go/mcloud",
     external: true,
     blurb:
       "Apps and cloud services for merchants, brokers, and NGOs. Runs on its own site.",
