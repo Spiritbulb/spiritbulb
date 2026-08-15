@@ -148,7 +148,6 @@ export default async function RootLayout({
       >
         <Header signedIn={signedIn} />
         {children}
-        <Footer />
       </body>
     </html>
   );
