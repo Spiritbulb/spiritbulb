@@ -66,7 +66,7 @@ export default function LoginClient() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-background px-4">
+    <main className="min-h-screen flex items-center justify-center bg-background px-4 md:py-20">
       <div className="w-full max-w-sm space-y-6">
         <div className="space-y-2 text-center">
           <LotusMark />

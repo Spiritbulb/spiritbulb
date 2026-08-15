@@ -71,7 +71,7 @@ export default function HomePage() {
                         </h2>
                         <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
                             <p>Your app is live in 60 seconds.</p>
-                            <p>MCloud manages apps and cloud services for merchants, brokers, and NGOs in Kenya. SSL, backups, and uptime monitoring are included. Free to start.</p>
+                            <p>MCloud manages apps and cloud services for businesses in Kenya. SSL, backups, and uptime monitoring are included. Free to start.</p>
                         </div>
                         <div className="flex flex-wrap gap-2">
                             {["🆕 Just launched", "Cloud services", "Free to start"].map((b) => (
@@ -99,7 +99,7 @@ export default function HomePage() {
                             Nuru
                         </h2>
                         <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
-                            <p>50+ students across 5 spaces, grown from a quiet MVP. Students built the community and we mostly stayed out of the way.</p>
+                            <p>50+ students across 5 spaces, grown from a quiet demo. Students built the community and we mostly stayed out of the way.</p>
                             <p>Nuru manages educational content for institutions in Kenya.</p>
                         </div>
                         <div className="flex flex-wrap gap-2">
@@ -182,7 +182,7 @@ export default function HomePage() {
                 <div className="max-w-2xl space-y-8">
                     <div className="space-y-4">
                         <h2 className="text-2xl font-bold md:text-4xl tracking-tight">
-                            One login. All four.
+                            Convinced? It's easy to get started
                         </h2>
                         <p className="text-muted-foreground text-sm leading-relaxed md:text-base">
                             The whole ecosystem opens with a single sign in. Start where you like.

@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import LoginClient from "./login-client";
 
 export const metadata: Metadata = {
-  title: "Sign in | Spiritbulb",
+  title: "Sign in",
   robots: { index: false, follow: false },
 };
 

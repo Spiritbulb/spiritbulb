@@ -47,9 +47,9 @@ export default function NotFound() {
                                         variant="outline"
                                         size="lg"
                                         className="cursor-pointer"
-                                        onClick={() => router.push("https://nuru.spiritbulb.org")}
+                                        onClick={() => router.push("https://www.mcloud.co.ke")}
                                     >
-                                        Check out Nuru →
+                                        Check out MCloud →
                                     </Button>
                                 </div>
                             </div>

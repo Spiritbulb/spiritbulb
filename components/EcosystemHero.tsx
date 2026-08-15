@@ -12,13 +12,13 @@ export default function EcosystemHero() {
           <div className="space-y-8 lg:order-1">
             <div className="space-y-4">
               <h1 className="text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">
-                Four branches.{" "}
+                Launch party{" "}
                 <Highlighter action="underline" color="var(--highlight-spiritbulb)">
-                  One ecosystem.
+                  here we come?
                 </Highlighter>
               </h1>
               <p className="text-base text-muted-foreground md:text-lg leading-relaxed">
-                Spiritbulb is one platform to build, sell, and engage. Four products, a single login. Come try the ones that are live.
+                Make that dream project a reality. Get a suite of powerful tools to help you build and grow in the cloud.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
