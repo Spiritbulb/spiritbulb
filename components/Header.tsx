@@ -15,7 +15,7 @@ export default function Header({ signedIn = false }: { signedIn?: boolean }) {
     };
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-md">
+        <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background">
             <div className="container mx-auto flex h-14 items-center justify-between px-4 md:px-6">
 
                 {/* Logo. Both variants render and CSS reveals the right one, so the

@@ -1,8 +1,8 @@
 import "server-only";
 
 function base(): string {
-  const b = process.env.MCLOUD_AUTH_BASE;
-  if (!b) throw new Error("MCLOUD_AUTH_BASE is not set");
+  const b = process.env.MCLOUD_BASE;
+  if (!b) throw new Error("MCLOUD_BASE is not set");
   return b.replace(/\/$/, "");
 }
 
@@ -26,8 +26,8 @@ export async function requestCode(
     // (anti-enumeration). Only a non-2xx (429 rate limit, 400 malformed) is an error.
     // redirect: "error" — a 30x (e.g. apex -> www) silently drops the
     // x-partner-secret header, which would surface as a confusing 401/502.
-    // Fail loudly instead: MCLOUD_AUTH_BASE must name the canonical host.
-    const res = await fetch(`${base()}/send-code`, {
+    // Fail loudly instead: MCLOUD_BASE must name the canonical host.
+    const res = await fetch(`${base()}/auth/send-code`, {
       method: "POST",
       headers: headers(),
       body: JSON.stringify({ email }),
@@ -51,7 +51,7 @@ export async function requestHandoff(
     // MCloud partner handoff: 200 { url } with a single-use redeem URL on success,
     // 401/429/400 { error } otherwise. redirect: "error" — a 30x would drop the
     // x-partner-secret header (see requestCode).
-    const res = await fetch(`${base()}/handoff`, {
+    const res = await fetch(`${base()}/auth/handoff`, {
       method: "POST",
       headers: headers(),
       body: JSON.stringify({ ...tokens, redirectTo }),
@@ -81,7 +81,7 @@ export async function verifyCode(
     // MCloud partner verify: 200 { accessToken, refreshToken, expiresIn } on success,
     // 400 { error } on bad/expired code. Success is HTTP 200 + an accessToken.
     // redirect: "error" — see requestCode; a 30x would drop the secret header.
-    const res = await fetch(`${base()}/verify`, {
+    const res = await fetch(`${base()}/auth/verify`, {
       method: "POST",
       headers: headers(),
       body: JSON.stringify({ email, code }),

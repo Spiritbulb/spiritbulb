@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
             body: JSON.stringify({
                 fields,
                 context: {
-                    pageUri: req.headers.get('referer') ?? 'https://spiritbulb.org/contact',
+                    pageUri: req.headers.get('referer') ?? 'https://spiritb.uk/contact',
                     pageName: 'Contact',
                 },
             }),

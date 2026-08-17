@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import HubClient from "@/components/HubClient";
 
 export const metadata: Metadata = {
-  title: "Home | Spiritbulb",
+  title: "Home",
   robots: { index: false, follow: false },
 };
 

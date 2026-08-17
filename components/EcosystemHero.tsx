@@ -12,24 +12,26 @@ export default function EcosystemHero() {
           <div className="space-y-8 lg:order-1">
             <div className="space-y-4">
               <h1 className="text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">
-                Launch party{" "}
+                We're{" "}
                 <Highlighter action="underline" color="var(--highlight-spiritbulb)">
-                  here we come?
+                  finally
                 </Highlighter>
+                {" "}ready
               </h1>
               <p className="text-base text-muted-foreground md:text-lg leading-relaxed">
-                Make that dream project a reality. Get a suite of powerful tools to help you build and grow in the cloud.
+                After a year of building, we are finally ready to show the world what Spiritbulb is all about. Join us and be among the first to experience our ecosystem of products designed to help you build, sell, and engage your audience.
               </p>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-5">
               <Button size="lg" className="gap-2" asChild>
                 <a href="/login">
                   Try it live <ArrowRight className="h-4 w-4" />
                 </a>
               </Button>
-              <Button variant="ghost" size="lg" asChild className="border">
-                <a href="#menengai">See the ecosystem</a>
-              </Button>
+              
+  <Button variant="ghost" size="lg" asChild className="border">
+    <a href="/rsvp">RSVP</a>
+  </Button>
             </div>
           </div>
           <div className="relative lg:order-2 hidden lg:flex justify-center">

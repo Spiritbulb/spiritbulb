@@ -74,7 +74,7 @@ export default function HomePage() {
                             <p>MCloud manages apps and cloud services for businesses in Kenya. SSL, backups, and uptime monitoring are included. Free to start.</p>
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            {["🆕 Just launched", "Cloud services", "Free to start"].map((b) => (
+                            {["🆕 Early Access", "Cloud services", "Free to start"].map((b) => (
                                 <Badge key={b} variant="secondary">{b}</Badge>
                             ))}
                         </div>
