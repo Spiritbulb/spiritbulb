@@ -5,7 +5,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MCLOUD_BASE = process.env.MCLOUD_BASE! // e.g. https://mcloud.co.ke/api/partner
-const MCLOUD_PARTNER_SECRET = process.env.MCLOUD_PARTNER_SECRET!
+const MCLOUD_PARTNER_SECRET = process.env.PARTNER_AUTH_SECRET!
 
 export async function POST(req: NextRequest) {
     let body: { email?: unknown; wantsUpdates?: unknown }
