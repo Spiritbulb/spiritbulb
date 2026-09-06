@@ -28,7 +28,7 @@ describe("/go/mcloud", () => {
       ok: true,
       url: "https://mcloud.co.ke/auth/handoff?ticket=abc",
     });
-    const res = await GET(req("https://spiritb.uk/go/mcloud?to=/onboarding"));
+    const res = await GET(req("https://spiritb.uk/go/mcloud?to=/org/onboarding"));
     expect(res.status).toBe(307);
     expect(res.headers.get("location")).toContain("/auth/handoff?ticket=");
   });
@@ -47,7 +47,7 @@ describe("/go/mcloud", () => {
 
   it("redirects to MCloud login when not signed in", async () => {
     (getSession as ReturnType<typeof vi.fn>).mockResolvedValue(null);
-    const res = await GET(req("https://spiritb.uk/go/mcloud?to=/onboarding"));
+    const res = await GET(req("https://spiritb.uk/go/mcloud?to=/org/onboarding"));
     expect(res.status).toBe(307);
     expect(res.headers.get("location")).toContain("mcloud.co.ke");
   });
@@ -57,7 +57,7 @@ describe("/go/mcloud", () => {
       data: { accessToken: "at", refreshToken: "rt", expiresAt: Date.now() + 1e5 },
     });
     (requestHandoff as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: false, error: "no" });
-    const res = await GET(req("https://spiritb.uk/go/mcloud?to=/onboarding"));
+    const res = await GET(req("https://spiritb.uk/go/mcloud?to=/org/onboarding"));
     expect(res.status).toBe(307);
     expect(res.headers.get("location")).toContain("mcloud.co.ke");
   });

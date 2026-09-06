@@ -5,9 +5,33 @@ import { Button } from "@/components/ui/button";
 import { safeNext } from "@/lib/auth/intent";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import LotusMark from "@/components/LotusMark";
+
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
+function GoogleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+      <path
+        fill="#4285F4"
+        d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.44c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.88c2.27-2.09 3.57-5.17 3.57-8.8z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-2.98c-1.08.72-2.45 1.16-4.05 1.16-3.11 0-5.74-2.1-6.68-4.92H1.32v3.07C3.29 21.3 7.31 24 12 24z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.32 14.35c-.24-.72-.38-1.49-.38-2.35s.14-1.63.38-2.35V6.58H1.32A11.98 11.98 0 0 0 0 12c0 1.93.46 3.76 1.32 5.42l4-3.07z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 4.77c1.77 0 3.35.61 4.6 1.8l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.29 2.7 1.32 6.58l4 3.07c.94-2.82 3.57-4.88 6.68-4.88z"
+      />
+    </svg>
+  );
+}
 
 export default function LoginClient() {
   const params = useSearchParams();
@@ -17,8 +41,18 @@ export default function LoginClient() {
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [googleBusy, setGoogleBusy] = useState(false);
   const [token, setToken] = useState('');
   const turnstileRef = useRef<TurnstileInstance>(null);
+
+  function signInWithGoogle() {
+    setGoogleBusy(true);
+    setError(null);
+    // Server route builds the Google authorization URL (with PKCE + state)
+    // and redirects. Never build the OAuth URL or hold the client secret here.
+    const url = `/api/auth/google/start?next=${encodeURIComponent(next)}`;
+    window.location.assign(url);
+  }
 
   async function sendCode(e: React.FormEvent) {
     e.preventDefault();
@@ -74,6 +108,29 @@ export default function LoginClient() {
           <p className="text-sm text-muted-foreground">
            We&apos;ll send you a one-time code to your email address.
           </p>
+        </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          className="w-full gap-2"
+          onClick={signInWithGoogle}
+          disabled={googleBusy}
+        >
+          <GoogleIcon />
+          {googleBusy ? "Redirecting" : "Continue with Google"}
+        </Button>
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Or continue with email
+            </span>
+          </div>
         </div>
 
         {step === "email" ? (

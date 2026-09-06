@@ -110,7 +110,7 @@ describe("requestHandoff", () => {
         { status: 200 }
       )
     ) as unknown as typeof fetch;
-    const res = await requestHandoff({ accessToken: "at", refreshToken: "rt" }, "/onboarding");
+    const res = await requestHandoff({ accessToken: "at", refreshToken: "rt" }, "/org/onboarding");
     expect(res.ok).toBe(true);
     expect(res.url).toContain("/auth/handoff?ticket=");
   });
