@@ -1,10 +1,8 @@
 import "../globals.css";
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { SESSION_COOKIE, getSession } from "@/lib/auth/session";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -122,16 +120,15 @@ const jsonLd = {
   slogan: '#ThatsTheSpirit',
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Verified session (decrypt + refresh-if-lapsed), so the nav agrees with the
-  // /home gate. We only need the boolean here; the /home route handles reseal.
-  const signedIn = (await getSession((await cookies()).get(SESSION_COOKIE)?.value)) !== null;
+  // The header reads a client-side hint cookie for signed-in state (see Header), so this
+  // layout stays static. Reading cookies() here would make every marketing page dynamic.
   return (<>
-        <Header signedIn={signedIn} />
+        <Header />
         {children}
       </>);
 }

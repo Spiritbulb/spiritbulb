@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyCode } from "@/lib/auth/mcloud-client";
-import { SESSION_COOKIE, sessionCookieOptions } from "@/lib/auth/session";
+import { writeSession } from "@/lib/auth/session";
 import { sealSession } from "@/lib/auth/session-crypto";
 
 export async function POST(req: NextRequest) {
@@ -27,6 +27,6 @@ export async function POST(req: NextRequest) {
     expiresAt: Date.now() + (result.expiresIn ?? 0) * 1000,
   });
   const res = NextResponse.json({ success: true });
-  res.cookies.set(SESSION_COOKIE, sealed, sessionCookieOptions());
+  writeSession(res.cookies, sealed);
   return res;
 }

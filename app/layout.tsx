@@ -1,10 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { SESSION_COOKIE, getSession } from "@/lib/auth/session";
 import { ServiceWorkerRegistrar } from './sw-register';
 
 const geistSans = Geist({
@@ -126,15 +124,14 @@ const jsonLd = {
 
 
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Verified session (decrypt + refresh-if-lapsed), so the nav agrees with the
-  // /home gate. We only need the boolean here; the /home route handles reseal.
-  const signedIn = (await getSession((await cookies()).get(SESSION_COOKIE)?.value)) !== null;
-  
+  // No cookies()/session read here: it was unused, and reading request data in the root
+  // layout makes every page dynamic (a function run per view, plus a WorkOS call when
+  // a token had lapsed). Keep this layout static.
 
   return (
     // suppressHydrationWarning: the script below sets data-theme/class on <html>

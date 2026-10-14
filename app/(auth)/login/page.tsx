@@ -1,7 +1,7 @@
 // app/login/page.tsx
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getSession, SESSION_COOKIE, sessionCookieOptions } from "@/lib/auth/session";
+import { getSession, SESSION_COOKIE, writeSession } from "@/lib/auth/session";
 import { safeNext } from "@/lib/auth/intent";
 import LoginClient from "./login-client";
 
@@ -18,7 +18,7 @@ export default async function LoginPage({
   if (session) {
     // If getSession refreshed the token, write the resealed cookie back
     if (session.resealed) {
-      cookieStore.set(SESSION_COOKIE, session.resealed, sessionCookieOptions());
+      writeSession(cookieStore, session.resealed);
     }
     redirect(safeNext(next ?? null));
   }

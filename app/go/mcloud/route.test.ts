@@ -49,16 +49,16 @@ describe("/go/mcloud", () => {
     (getSession as ReturnType<typeof vi.fn>).mockResolvedValue(null);
     const res = await GET(req("https://spiritb.uk/go/mcloud?to=/org/onboarding"));
     expect(res.status).toBe(307);
-    expect(res.headers.get("location")).toContain("mcloud.co.ke");
+    expect(res.headers.get("location")).toContain("/login?next=");
   });
 
-  it("redirects to MCloud login when the handoff fails", async () => {
+  it("stops on an error page when the handoff fails, rather than looping through /login", async () => {
     (getSession as ReturnType<typeof vi.fn>).mockResolvedValue({
       data: { accessToken: "at", refreshToken: "rt", expiresAt: Date.now() + 1e5 },
     });
     (requestHandoff as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: false, error: "no" });
     const res = await GET(req("https://spiritb.uk/go/mcloud?to=/org/onboarding"));
     expect(res.status).toBe(307);
-    expect(res.headers.get("location")).toContain("mcloud.co.ke");
+    expect(res.headers.get("location")).toBe("https://spiritb.uk/handoff-failed");
   });
 });

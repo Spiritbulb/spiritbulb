@@ -24,9 +24,9 @@ export async function GET(req: NextRequest) {
     to,
   );
   if (!handoff.ok || !handoff.url) {
-    const loginUrl = new URL("/login", req.nextUrl.origin);
-    loginUrl.searchParams.set("next", `/go/mcloud?to=${encodeURIComponent(to)}`);
-    return NextResponse.redirect(loginUrl);
+    // Signed in, but MCloud refused the handoff. /login would bounce a signed-in user
+    // straight back here, forever, so stop on a page that says so.
+    return NextResponse.redirect(new URL("/handoff-failed", req.nextUrl.origin));
   }
   return NextResponse.redirect(handoff.url);
 }

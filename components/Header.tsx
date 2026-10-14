@@ -1,8 +1,23 @@
 'use client';
 import Link from 'next/link';
+import { useSyncExternalStore } from 'react';
 import { Sun, Moon } from 'lucide-react';
 
-export default function Header({ signedIn = false }: { signedIn?: boolean }) {
+// Mirrors SESSION_HINT_COOKIE in lib/auth/session.ts (not imported: that file is server-side).
+const HINT_COOKIE = 'sb_li';
+
+function readHint(): boolean {
+    return document.cookie.split('; ').some((c) => c === `${HINT_COOKIE}=1`);
+}
+
+// Cookies don't notify, so there is nothing to subscribe to; the value is read on mount.
+const subscribe = () => () => {};
+
+export default function Header() {
+    // False on the server and first paint, then the hint cookie once hydrated. The pages are
+    // static, so the server cannot know; a signed-in visitor sees "Sign in" for a moment.
+    const signedIn = useSyncExternalStore(subscribe, readHint, () => false);
+
     // The theme is already applied to <html> by the pre-hydration script in the
     // layout, and which icon/logo shows is decided in CSS. So nothing here reads
     // the theme during render, which is what used to cause the hydration
@@ -26,9 +41,9 @@ export default function Header({ signedIn = false }: { signedIn?: boolean }) {
                 </Link>
 
                 {/* Right side: auth actions + theme toggle. Signed-in shows Home +
-                    Sign out; signed-out shows Sign in. `signedIn` comes from the
-                    server layout (a cookie presence check), so this only reflects
-                    session state, it does not enforce it. */}
+                    Sign out; signed-out shows Sign in. `signedIn` comes from a
+                    non-secret hint cookie, so this only reflects session state,
+                    it does not enforce it. */}
                 <div className="flex items-center gap-2">
                     {signedIn ? (
                         <>

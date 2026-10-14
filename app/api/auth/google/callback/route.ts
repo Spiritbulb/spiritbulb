@@ -7,7 +7,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { WorkOS } from "@workos-inc/node";
-import { SESSION_COOKIE, sessionCookieOptions } from "@/lib/auth/session";
+import { writeSession } from "@/lib/auth/session";
 import { sealSession } from "@/lib/auth/session-crypto";
 
 const workos = new WorkOS(process.env.WORKOS_API_KEY!);
@@ -64,6 +64,6 @@ export async function GET(req: NextRequest) {
   // setting cookies on that one is the classic reason "the session doesn't
   // get recorded" — the browser never sees a Set-Cookie header at all.
   const res = NextResponse.redirect(new URL(next, url.origin));
-  res.cookies.set(SESSION_COOKIE, sealed, sessionCookieOptions());
+  writeSession(res.cookies, sealed);
   return res;
 }
