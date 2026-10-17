@@ -3,33 +3,33 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import PATHS from "./lotus-paths.json";
+import { PRODUCTS, STATUS_LABEL, type ProductStatus } from "@/lib/products";
 
 /**
  * The five-leaf lotus as navigation.
  *
- * Geometry in lotus-paths.json is the real brand mark (public/logo-sb.svg),
- * split into its five petals by pairing each orange outer contour with the
- * black inner one that sits inside it. Each petal is two filled contours, and
+ * Geometry in lotus-paths.json is the brand mark (public/lotus.svg), split
+ * into its five petals by pairing each dark gold outer contour with the light
+ * gold inner one that sits inside it. Each petal is two filled contours, and
  * that doubling is what makes it read as the Spiritbulb lotus rather than a
  * generic flower.
  *
- * The source SVG is a bitmap trace: every petal is ~1,200 one-pixel `L` steps,
- * which read as jagged once the mark is drawn larger than a favicon. The paths
- * here are simplified (Douglas-Peucker) and re-fitted as curves, keeping the
- * sharp turns as hard corners so the petal tips stay pointed. Regenerate the
- * same way if the mark changes.
+ * The paths are copied verbatim from the SVG, in its own coordinates, so there
+ * are no per-petal transforms. The source's clip paths only trim each petal to
+ * its own bounding box and are dropped. If the mark changes, re-split it the
+ * same way: petal by position, outer and inner by fill.
  *
  * Four petals are products. The upright centre petal is Spiritbulb itself. A
  * petal carries its product's colour only when the product is actually
  * reachable, so the flower fills in as the ecosystem ships.
  *
- * The mark paints at x 121..1799, y 0..1080, and the viewBox is fitted to that.
+ * The mark paints at x 0..1500, y 267..1233, and the viewBox is fitted to that.
  * The petals carry no text of their own: they are concave crescents, so labels
  * placed against them collide at some breakpoint or another. The panel beside
  * the flower names whichever product is active instead.
  */
 
-export type LeafStatus = "live" | "open" | "preview" | "soon";
+export type LeafStatus = ProductStatus;
 
 export type Leaf = {
   id: keyof typeof PATHS;
@@ -46,61 +46,29 @@ export type Leaf = {
   action: string;
 };
 
-export const LEAVES: Leaf[] = [
-  {
-    id: "nuru",
-    name: "Nuru",
-    color: "#14B8A6",
-    status: "open",
-    lit: true,
-    href: "/nuru",
-    blurb:
-      "A study companion that chats with your notes. Open to students in the beta.",
-    action: "Go to Nuru",
-  },
-  {
-    id: "reach",
-    name: "Reach",
-    color: "#E0A030",
-    status: "preview",
-    lit: false,
-    href: "/reach",
-    blurb:
-      "Storefronts and fulfilment for Kenyan merchants. Live for 13 merchants in Nakuru, but not on the web yet.",
-    action: "Read about Reach",
-  },
-  {
-    id: "mcloud",
-    name: "MCloud",
-    color: "#38B6FF",
-    status: "live",
-    lit: true,
-    href: "/go/mcloud",
-    external: true,
-    blurb:
-      "Apps and cloud services for merchants, brokers, and NGOs. Runs on its own site.",
-    action: "Open mcloud.co.ke",
-  },
-  {
-    id: "tufike",
-    name: "Tufike",
-    color: "#D6453D",
-    status: "soon",
-    lit: false,
-    href: "/tufike",
-    blurb: "Community events and venues, pop-up style. Still being built.",
-    action: "Join the waitlist",
-  },
-];
+/**
+ * One petal per product, straight from the status config. A petal links to
+ * the product's primary action, or to its page while that action is still TBD.
+ */
+export const LEAVES: Leaf[] = PRODUCTS.map((p) => {
+  const ready = !p.primary.tbd;
+  return {
+    id: p.slug,
+    name: p.name,
+    color: p.color,
+    status: p.status,
+    lit: p.status !== "waitlist",
+    href: ready ? p.primary.href : `/${p.slug}`,
+    // The MCloud handoff leaves for mcloud.co.ke, so it opens beside the hub.
+    external: ready && p.primary.href.startsWith("/go/"),
+    blurb: p.door,
+    action: ready ? p.primary.label : `Read about ${p.name}`,
+  };
+});
 
-const CORE_COLOR = "#F0803A";
+const CORE_COLOR = "var(--brand)";
 
-const STATUS_COPY: Record<LeafStatus, string> = {
-  live: "Live",
-  open: "Open",
-  preview: "Preview",
-  soon: "Not open yet",
-};
+const STATUS_COPY = STATUS_LABEL;
 
 /** Petals bloom outward from the centre. */
 const ORDER = ["core", "nuru", "reach", "mcloud", "tufike"] as const;
@@ -132,7 +100,7 @@ export default function LotusNav({
 
   return (
     <svg
-      viewBox="91 -30 1738 1140"
+      viewBox="-10 255 1520 990"
       className="block h-auto w-full"
       role="group"
       aria-label="Spiritbulb products"
@@ -151,13 +119,11 @@ export default function LotusNav({
       >
         <path
           d={PATHS.core.outer.d}
-          transform={PATHS.core.outer.t}
-          fill={CORE_COLOR}
+          style={{ fill: CORE_COLOR }}
         />
         <path
           d={PATHS.core.inner.d}
-          transform={PATHS.core.inner.t}
-          fill={CORE_COLOR}
+          style={{ fill: CORE_COLOR }}
           opacity={0.4}
         />
       </motion.g>
@@ -197,7 +163,6 @@ export default function LotusNav({
                   filled target most of the petal would not take a hover. */}
               <path
                 d={p.outer.d}
-                transform={p.outer.t}
                 fill="transparent"
                 stroke="transparent"
                 strokeWidth={40}
@@ -206,8 +171,7 @@ export default function LotusNav({
               {/* Outer contour. Lit petals carry the product colour. */}
               <path
                 d={p.outer.d}
-                transform={p.outer.t}
-                fill={leaf.lit ? leaf.color : "currentColor"}
+                style={{ fill: leaf.lit ? leaf.color : "currentColor" }}
                 className={cn(
                   "pointer-events-none transition-opacity duration-300",
                   !leaf.lit && "text-muted-foreground"
@@ -218,8 +182,7 @@ export default function LotusNav({
               {/* Inner contour, the doubling that makes it the Spiritbulb mark. */}
               <path
                 d={p.inner.d}
-                transform={p.inner.t}
-                fill={leaf.lit ? leaf.color : "currentColor"}
+                style={{ fill: leaf.lit ? leaf.color : "currentColor" }}
                 className={cn(
                   "pointer-events-none transition-opacity duration-300",
                   !leaf.lit && "text-muted-foreground"

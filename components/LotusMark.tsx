@@ -17,15 +17,16 @@ import PATHS from "./lotus-paths.json";
  *
  * The interactive, status-aware version of the same geometry lives in LotusNav
  * and is used on the signed-in hub. Shares lotus-paths.json with it; see that
- * file's header for how the geometry is derived from public/logo-sb.svg.
+ * file's header for how the geometry is derived from public/lotus.svg.
  */
 
+// Design tokens from app/globals.css, so the mark follows the site's colours.
 const PETALS = [
-  { id: "core", color: "#F0803A" },
-  { id: "nuru", color: "#14B8A6" },
-  { id: "reach", color: "#E0A030" },
-  { id: "mcloud", color: "#38B6FF" },
-  { id: "tufike", color: "#D6453D" },
+  { id: "core", color: "var(--brand)" },
+  { id: "nuru", color: "var(--nuru)" },
+  { id: "reach", color: "var(--reach)" },
+  { id: "mcloud", color: "var(--mcloud)" },
+  { id: "tufike", color: "var(--tufike)" },
 ] as const;
 
 export type PetalId = (typeof PETALS)[number]["id"];
@@ -46,7 +47,7 @@ export default function LotusMark({
 
   return (
     <svg
-      viewBox="91 -30 1738 1140"
+      viewBox="-10 255 1520 990"
       className={cn("block h-auto w-full", className)}
       role="img"
       aria-label={label}
@@ -74,15 +75,13 @@ export default function LotusMark({
           >
             <path
               d={PATHS[petal.id].outer.d}
-              transform={PATHS[petal.id].outer.t}
-              fill={lit ? petal.color : "currentColor"}
+              style={{ fill: lit ? petal.color : "currentColor" }}
               className={lit ? undefined : "text-muted-foreground"}
               opacity={lit ? 1 : 0.3}
             />
             <path
               d={PATHS[petal.id].inner.d}
-              transform={PATHS[petal.id].inner.t}
-              fill={lit ? petal.color : "currentColor"}
+              style={{ fill: lit ? petal.color : "currentColor" }}
               className={lit ? undefined : "text-muted-foreground"}
               opacity={lit ? 0.42 : 0.18}
             />

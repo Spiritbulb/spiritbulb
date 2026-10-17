@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   // ── Core ──────────────────────────────────────────────────────────────────
   title: "Spiritbulb | Build, sell, and engage your audience",
   description:
-    "Spiritbulb provides an ecosystem to build, sell, and engage your audience. MCloud, Reach, Nuru, and Tufike, running on Spiritbulb's own infrastructure in Kenya.",
+    "One platform for East African businesses and institutions, with AI built in.",
 
   // ── Canonical & robots ────────────────────────────────────────────────────
   metadataBase: new URL("https://spiritb.uk"),
@@ -77,7 +77,7 @@ const jsonLd = {
         "https://linkedin.com/company/spiritbulb",
       ],
       description:
-        "Spiritbulb provides an ecosystem to build, sell, and engage your audience. Runs on its own infrastructure in Kenya.",
+        "One platform for East African businesses and institutions, with AI built in.",
       foundingLocation: {
         "@type": "Place",
         name: "Kenya",

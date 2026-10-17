@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { clearSession } from "@/lib/auth/session";
-import { SITE } from "@/lib/products";
+import { SITE } from "@/lib/site";
 
 // Clears the session cookie and returns home. POST (not GET) so a stray
 // prefetch or crawler can't sign a user out. The cookie is expired by setting

@@ -1,24 +1,64 @@
 /**
- * The four products, in one place.
+ * The four products, in one place: the four doors of docs/site-plan.md.
  *
- * Each one is a page in this app that the proxy also serves from its own
+ * This is the status config. Badges, buttons, the lotus, the hub and the
+ * sitemap all read from here, so when a product's status changes, change it
+ * here and nowhere else.
+ *
+ * Each product is a page in this app that is also served from its own
  * subdomain. The subdomain is the canonical URL, so `canonical` here is what
  * every product page reports to search engines and what the path form
  * (spiritb.uk/nuru) redirects to.
  *
- * Colours match the lotus petals in components/LotusNav.tsx.
+ * `color` is a design token (app/globals.css), so pages and graphics follow
+ * light and dark mode from one place.
  */
 
-export const SITE = "https://spiritb.uk";
+import { SITE, contactHref } from "@/lib/site";
 
-export type ProductStatus = "live" | "beta" | "building" | "waitlist";
+export type ProductStatus = "live" | "preview" | "waitlist";
+
+/**
+ * What pressing a button does. Only `signup` and `preview` may look like a
+ * sign-up button; `waitlist` and `contact` are always styled as secondary,
+ * because they do not get you into a product.
+ */
+export type ActionKind = "signup" | "preview" | "waitlist" | "contact";
+
+export type Action = {
+  label: string;
+  href: string;
+  kind: ActionKind;
+  /** Small print under the button. */
+  note?: string;
+  /**
+   * Set while the destination is unknown. The button then renders with a
+   * visible {{TBD}} marker instead of pretending to work.
+   */
+  tbd?: string;
+};
+
+export const STATUS_LABEL: Record<ProductStatus, string> = {
+  live: "Live",
+  preview: "Preview",
+  waitlist: "Waitlist",
+};
 
 export type Product = {
   slug: "nuru" | "reach" | "tufike" | "mcloud";
   name: string;
+  /** The door this product is. */
+  verb: "Sell" | "Host" | "Gather" | "Teach";
+  /** The door card line on the homepage. */
+  door: string;
   color: string;
+  status: ProductStatus;
+  primary: Action;
+  secondary?: Action;
   /** The subdomain this product is served from. Canonical. */
   canonical: string;
+  // The fields below feed the current product pages and are rewritten in
+  // phase 4 of the site plan.
   /** One line, for the page's <title> and search snippets. */
   tagline: string;
   /** The meta description. Says what it does and who it is for. */
@@ -27,83 +67,92 @@ export type Product = {
   heading: string;
   /** The paragraph under the h1. */
   intro: string;
-  status: ProductStatus;
-  /** What a visitor can actually do today. Honest, not aspirational. */
-  statusLine: string;
   /** schema.org applicationCategory. */
   category: string;
-  /** Proof points. Real numbers only. */
-  facts: string[];
-  /** Where the real product lives, if anywhere. */
-  external?: { label: string; href: string };
 };
 
 export const PRODUCTS: Product[] = [
   {
-    slug: "nuru",
-    name: "Nuru",
-    color: "#14B8A6",
-    canonical: "https://nuru.spiritb.uk",
-    tagline: "The study companion that chats with your notes",
-    description:
-      "Nuru is a study companion for Kenyan students. Upload your notes, ask questions, and get answers drawn from your own material. In closed Android beta.",
-    heading: "Study with your own notes.",
-    intro:
-      "Nuru reads the material you already have and answers questions from it. No generic textbook answers, just your notes, your course, your words.",
-    status: "beta",
-    statusLine: "In closed beta with students on five campuses.",
-    category: "EducationalApplication",
-    facts: ["50+ students", "5 campuses", "Closed Android beta"],
-  },
-  {
     slug: "reach",
     name: "Reach",
-    color: "#E0A030",
-    canonical: "https://reach.spiritb.uk",
-    tagline: "Storefronts and fulfilment for Kenyan merchants",
-    description:
-      "Reach gives Kenyan merchants a storefront, social selling, and fulfilment in one place. Live with merchants in Nakuru.",
-    heading: "Sell where your customers already are.",
-    intro:
-      "Reach puts your catalogue online, keeps it in step with the channels you already sell on, and handles fulfilment. Built with merchants in Nakuru, not for a boardroom.",
+    verb: "Sell",
+    door: "Build a storefront and sell on the marketplace.",
+    color: "var(--reach)",
     status: "live",
-    statusLine:
-      "Live with merchants in Nakuru. The web version is still being built.",
-    category: "BusinessApplication",
-    facts: ["13 merchants", "KSH 250k+ listed", "Nakuru"],
-  },
-  {
-    slug: "tufike",
-    name: "Tufike",
-    color: "#D6453D",
-    canonical: "https://tufike.spiritb.uk",
-    tagline: "Community events and venues in Kenya",
+    // Storefronts are built in the MCloud store app until Reach has its own web app.
+    primary: { label: "Start selling", href: "https://app.mcloud.co.ke", kind: "signup" },
+    canonical: "https://reach.spiritb.uk",
+    tagline: "Build a storefront and sell on the marketplace",
     description:
-      "Tufike is a home for community events and the venues that host them, pop-up style. Early, and being built in the open.",
-    heading: "Events worth showing up to.",
+      "Reach lets East African businesses build a storefront and sell on the Reach marketplace, with local billing.",
+    heading: "Build a storefront. Sell on the marketplace.",
     intro:
-      "Tufike connects the people running community events with the venues that can host them. Small, local, and pop-up by nature.",
-    status: "building",
-    statusLine: "Still being built. Leave your email and we will tell you when it opens.",
-    category: "EntertainmentApplication",
-    facts: ["Community events", "Pop-up venues", "Early stage"],
+      "Reach puts your shop online and onto the Reach marketplace, running on MCloud with local billing.",
+    category: "ShoppingApplication",
   },
   {
     slug: "mcloud",
     name: "MCloud",
-    color: "#38B6FF",
-    canonical: "https://mcloud.spiritb.uk",
-    tagline: "Apps and cloud services for Kenyan businesses",
-    description:
-      "MCloud runs apps and cloud services for merchants, brokers, and NGOs in Kenya. SSL, backups, and uptime monitoring included. Free to start.",
-    heading: "Your app is live in 60 seconds.",
-    intro:
-      "MCloud runs the apps and cloud services behind Kenyan merchants, brokers, and NGOs. SSL, backups, and uptime monitoring come as standard.",
+    verb: "Host",
+    door: "Managed infrastructure with local billing, running on clean energy.",
+    color: "var(--mcloud)",
     status: "live",
-    statusLine: "Live, and running on its own site.",
+    primary: { label: "Get started", href: "/go/mcloud?to=/", kind: "signup" },
+    canonical: "https://mcloud.spiritb.uk",
+    tagline: "Managed infrastructure with local billing, on clean energy",
+    description:
+      "MCloud is managed infrastructure with easy local billing, running on green infrastructure, for East African businesses and institutions. Hosted AI models and your own servers are available on request.",
+    heading: "Managed infrastructure, billed the local way.",
+    intro:
+      "MCloud runs your shop with easy local billing. Need AI models hosted, or want to run on your own servers? Talk to us.",
     category: "BusinessApplication",
-    facts: ["Free to start", "SSL and backups included", "Uptime monitoring"],
-    external: { label: "Go to mcloud.co.ke", href: "https://mcloud.co.ke" },
+  },
+  {
+    slug: "tufike",
+    name: "Tufike",
+    verb: "Gather",
+    door: "Ticketing plus the before and after that keeps your audience hooked.",
+    color: "var(--tufike)",
+    status: "waitlist",
+    primary: {
+      label: "Join the waitlist",
+      href: "/tufike#waitlist",
+      kind: "waitlist",
+      note: "Waitlist members hear first.",
+    },
+    canonical: "https://tufike.spiritb.uk",
+    tagline: "Ticketing and events people keep talking about",
+    description:
+      "Tufike is seamless ticketing plus the pre-event and post-event experiences that keep an audience hooked. Join the waitlist.",
+    heading: "Throw events people keep talking about.",
+    intro:
+      "Seamless ticketing, plus the before and after that keeps your audience hooked. For organizers who want more than a head count.",
+    category: "EntertainmentApplication",
+  },
+  {
+    slug: "nuru",
+    name: "Nuru",
+    verb: "Teach",
+    door: "AI built for learning. Upload what you study, get notes and questions, and keep a library you control.",
+    color: "var(--nuru)",
+    status: "preview",
+    primary: {
+      label: "Try the preview",
+      // The preview is built into the Nuru page itself, on MCloud's Nuru partner APIs.
+      href: "/nuru#preview",
+      tbd: "Nuru web preview, built on the Nuru page",
+      kind: "preview",
+      note: "Free daily messages, so you can try Nuru on real work.",
+    },
+    secondary: { label: "Talk to us", href: contactHref("institution"), kind: "contact" },
+    canonical: "https://nuru.spiritb.uk",
+    tagline: "AI built for learning",
+    description:
+      "Upload what you're learning. Nuru turns it into notes, questions, and a library that's yours. Free preview on the web.",
+    heading: "Upload what you're learning. Nuru turns it into notes, questions, and a library that's yours.",
+    intro:
+      "Chat with Nuru, share what you make, and let anyone you choose ask Nuru about it.",
+    category: "EducationalApplication",
   },
 ];
 
@@ -145,7 +194,7 @@ export function productJsonLd(p: Product) {
     "@type": "SoftwareApplication",
     name: p.name,
     applicationCategory: p.category,
-    operatingSystem: p.slug === "nuru" ? "Android" : "Web",
+    operatingSystem: "Web",
     url: p.canonical,
     description: p.description,
     inLanguage: "en-KE",

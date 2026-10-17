@@ -4,13 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import LotusNav, { LEAVES, type Leaf } from "@/components/LotusNav";
-
-const STATUS_COPY: Record<Leaf["status"], string> = {
-  live: "Live",
-  open: "Open",
-  preview: "Preview",
-  soon: "Not open yet",
-};
+import { STATUS_LABEL as STATUS_COPY } from "@/lib/products";
 
 /** Shown when no petal is being pointed at. */
 function Resting({ litCount }: { litCount: number }) {

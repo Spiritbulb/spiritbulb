@@ -33,6 +33,23 @@ describe("product subdomains", () => {
     expect(match(redirects, "nuru.spiritb.uk", "/nuru")?.destination).toBe("/");
   });
 
+  it("sends nav links on one product subdomain to the right canonical URL", () => {
+    expect(match(redirects, "nuru.spiritb.uk", "/reach")?.destination).toBe(
+      "https://reach.spiritb.uk/",
+    );
+    expect(match(redirects, "tufike.spiritb.uk", "/pricing")?.destination).toBe(
+      "https://spiritb.uk/pricing",
+    );
+    expect(match(redirects, "mcloud.spiritb.uk", "/contact")?.destination).toBe(
+      "https://spiritb.uk/contact",
+    );
+  });
+
+  it("never sends development hosts to the live site", () => {
+    expect(match(redirects, "nuru.localhost", "/pricing")).toBeUndefined();
+    expect(match(redirects, "nuru.localhost", "/reach")).toBeUndefined();
+  });
+
   it("leaves non-product paths and hosts alone", () => {
     expect(match(rewrites, "spiritb.uk", "/")).toBeUndefined();
     expect(match(redirects, "spiritb.uk", "/contact")).toBeUndefined();

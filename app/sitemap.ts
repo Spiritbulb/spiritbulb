@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
-import { PRODUCTS, SITE } from "@/lib/products";
+import { PRODUCTS } from "@/lib/products";
+import { SITE } from "@/lib/site";
 
 /**
  * Products are listed at their subdomain, because that is the canonical URL the

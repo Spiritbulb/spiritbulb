@@ -1,17 +1,13 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import Link from "next/link";
 import { motion, useInView } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LotusMark from "@/components/LotusMark";
-import { SITE, type Product } from "@/lib/products";
+import { StatusBadge } from "@/components/site/status-badge";
+import { ActionButton } from "@/components/site/action-button";
+import type { Product } from "@/lib/products";
 
-// mcloud exposes the beta-join API (adds the email to the shared
-// beta@spiritbulb.org Google Group wired to Play closed testing) and returns
-// the Nuru Play opt-in URL. Only members of that group can install the beta.
-const JOIN_API = "https://www.mcloud.co.ke/api/beta/join";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function FadeIn({
@@ -38,13 +34,15 @@ function FadeIn({
   );
 }
 
-function SignupForm({ product }: { product: Product }) {
+/**
+ * The waitlist, on the page itself. Posts to /api/waitlist, which stores the
+ * signup with MCloud's partner waitlist. One field: the fewer, the better.
+ */
+function WaitlistForm({ product }: { product: Product }) {
   const [email, setEmail] = useState("");
-  const [done, setDone] = useState<{ optInUrl: string | null } | null>(null);
+  const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPending, start] = useTransition();
-
-  const isBeta = product.status === "beta";
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,20 +54,13 @@ function SignupForm({ product }: { product: Product }) {
     setError(null);
     start(async () => {
       try {
-        const res = await fetch(JOIN_API, {
+        const res = await fetch("/api/waitlist", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: trimmed,
-            source: `spiritbulb-${product.slug}`,
-          }),
+          body: JSON.stringify({ email: trimmed }),
         });
-        const data = (await res.json()) as {
-          ok?: boolean;
-          optInUrl?: string | null;
-          error?: string;
-        };
-        if (res.ok && data.ok) setDone({ optInUrl: data.optInUrl ?? null });
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        if (res.ok) setDone(true);
         else setError(data.error ?? "Something went wrong. Please try again.");
       } catch {
         setError("Could not reach the server. Please try again.");
@@ -77,39 +68,23 @@ function SignupForm({ product }: { product: Product }) {
     });
   };
 
-  const inputCls = cn(
-    "h-11 w-full rounded-xl px-4 text-[14px] text-foreground placeholder:text-muted-foreground/60",
-    "border border-border bg-foreground/5",
-    "transition-all duration-150 focus:border-foreground/30 focus:bg-foreground/[0.08] focus:outline-none"
-  );
-
   if (done) {
     return (
-      <div className="space-y-3 rounded-xl border border-border bg-foreground/5 px-4 py-4">
-        <p className="text-[14px] text-foreground">You are on the list.</p>
-        {isBeta && done.optInUrl && (
-          <a
-            href={done.optInUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-[13px] font-medium text-background transition-opacity hover:opacity-90"
-            style={{ backgroundColor: product.color }}
-          >
-            Opt in to the Android beta
-            <ArrowUpRight className="h-4 w-4" />
-          </a>
-        )}
-        <p className="text-[12px] text-muted-foreground">
-          {isBeta
-            ? "Open this on the Android device you will test with, signed in to the Google account on this email."
-            : `We will email you when ${product.name} opens.`}
+      <div className="rounded-xl border border-border bg-foreground/5 px-4 py-4">
+        <p className="text-[14px] text-foreground">
+          You are on the {product.name} waitlist.
         </p>
+        {product.primary.note && (
+          <p className="mt-1 text-[12px] text-muted-foreground">
+            {product.primary.note}
+          </p>
+        )}
       </div>
     );
   }
 
   return (
-    <div>
+    <div id="waitlist" className="scroll-mt-24">
       <form onSubmit={submit} className="flex flex-col gap-2 sm:flex-row">
         <input
           type="email"
@@ -118,25 +93,29 @@ function SignupForm({ product }: { product: Product }) {
             setEmail(e.target.value);
             if (error) setError(null);
           }}
-          placeholder={isBeta ? "you@gmail.com" : "you@example.com"}
+          placeholder="you@example.com"
           aria-label="Email address"
-          className={inputCls}
+          autoComplete="email"
+          className={cn(
+            "h-11 w-full rounded-xl px-4 text-[14px] text-foreground placeholder:text-muted-foreground/60",
+            "border border-border bg-foreground/5",
+            "transition-all duration-150 focus:border-foreground/30 focus:bg-foreground/[0.08] focus:outline-none"
+          )}
           required
         />
+        {/* Outlined like every waitlist button: joining a list is not signing up. */}
         <button
           type="submit"
           disabled={isPending}
-          className="h-11 shrink-0 rounded-xl px-6 text-[14px] font-medium text-background transition-opacity duration-150 hover:opacity-90 disabled:opacity-60"
-          style={{ backgroundColor: product.color }}
+          className="h-11 shrink-0 rounded-xl border border-border px-6 text-[14px] font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-60"
         >
-          {isPending ? "Joining" : isBeta ? "Join the beta" : "Keep me posted"}
+          {isPending ? "Joining" : product.primary.label}
         </button>
       </form>
       {error && <p className="mt-2 text-[13px] text-destructive">{error}</p>}
-      {isBeta && (
-        <p className="mt-3 text-[12px] text-muted-foreground/60">
-          Use a Google account. The Android beta installs through Google Play, so
-          we can only invite Google accounts.
+      {product.primary.note && (
+        <p className="mt-3 text-[12px] text-muted-foreground">
+          {product.primary.note}
         </p>
       )}
     </div>
@@ -154,85 +133,37 @@ export default function ProductPage({ product }: { product: Product }) {
         />
       </div>
 
-      <div className="container relative z-10 mx-auto max-w-2xl px-6 py-28 md:px-12 md:py-36">
+      <div className="container relative z-10 mx-auto max-w-2xl px-6 py-20 md:px-12 md:py-28">
         <FadeIn className="space-y-5">
           {/* Wayfinding: this product's petal is lit, the rest of the ecosystem
-              sits behind it in grey. The link is absolute because on a product
-              subdomain "/" is this same page, not the Spiritbulb home. */}
-          <Link
-            href={SITE}
-            aria-label="Spiritbulb home"
-            className="inline-block rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
-          >
-            <LotusMark active={product.slug} className="w-[112px]" />
-          </Link>
+              sits behind it in grey. */}
+          <LotusMark active={product.slug} className="w-[112px]" />
 
-          <p
-            className="text-[12px] font-semibold uppercase tracking-widest"
-            style={{ color: product.color }}
-          >
-            {product.name}
-          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-[12px] font-semibold uppercase tracking-widest text-muted-foreground">
+              {product.verb} · {product.name}
+            </p>
+            <StatusBadge status={product.status} />
+          </div>
 
-          <h1 className="text-[2.8rem] font-bold leading-[1.04] tracking-tight md:text-[3.5rem]">
+          <h1 className="text-[2.4rem] font-bold leading-[1.06] tracking-tight md:text-[3.25rem]">
             {product.heading}
           </h1>
 
           <p className="max-w-lg text-[15px] leading-relaxed text-muted-foreground">
             {product.intro}
           </p>
-
-          <p className="text-[13px] text-muted-foreground/70">
-            {product.statusLine}
-          </p>
         </FadeIn>
 
-        <FadeIn delay={0.1} className="mt-10">
-          {product.slug === "mcloud" ? (
-            // MCloud is the one product we can hand a session to. Route through
-            // /go/mcloud (same tab, so cookies travel): signed-in visitors land
-            // in MCloud already authed via the handoff, signed-out ones go to
-            // MCloud's login. Not target="_blank" and not the raw external href.
-            <a
-              href="/go/mcloud?to=/"
-              className="inline-flex h-11 items-center gap-2 rounded-xl px-6 text-[14px] font-medium text-background transition-opacity hover:opacity-90"
-              style={{ backgroundColor: product.color }}
-            >
-              {product.external?.label ?? "Go to MCloud"}
-              <ArrowUpRight className="h-4 w-4" />
-            </a>
-          ) : product.external ? (
-            <a
-              href={product.external.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-11 items-center gap-2 rounded-xl px-6 text-[14px] font-medium text-background transition-opacity hover:opacity-90"
-              style={{ backgroundColor: product.color }}
-            >
-              {product.external.label}
-              <ArrowUpRight className="h-4 w-4" />
-            </a>
+        <FadeIn delay={0.1} className="mt-10 flex flex-wrap items-start gap-3">
+          {product.primary.kind === "waitlist" ? (
+            <WaitlistForm product={product} />
           ) : (
-            <SignupForm product={product} />
+            <ActionButton action={product.primary} size="lg" />
           )}
-        </FadeIn>
-
-        <FadeIn delay={0.2} className="mt-14">
-          <ul className="flex flex-wrap gap-x-8 gap-y-3">
-            {product.facts.map((f) => (
-              <li
-                key={f}
-                className="flex items-center gap-2 text-[13px] text-muted-foreground"
-              >
-                <span
-                  aria-hidden
-                  className="inline-block h-1.5 w-1.5 rounded-full"
-                  style={{ backgroundColor: product.color }}
-                />
-                {f}
-              </li>
-            ))}
-          </ul>
+          {product.secondary && (
+            <ActionButton action={product.secondary} size="lg" />
+          )}
         </FadeIn>
       </div>
     </div>
