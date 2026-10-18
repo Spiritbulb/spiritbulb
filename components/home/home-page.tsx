@@ -261,7 +261,7 @@ function MadeFor() {
 
 function YourTerms() {
   const energy = thread("clean-energy");
-  const lockIn = thread("no-lock-in");
+  const yourData = thread("your-data");
 
   // Inverted: the page's own foreground as the background, in both modes.
   return (
@@ -274,11 +274,11 @@ function YourTerms() {
           </p>
         </div>
         <div className="space-y-3">
-          <p className="font-display text-3xl font-bold tracking-tight md:text-4xl">{lockIn.title}</p>
-          <p className="max-w-md leading-relaxed opacity-75">{lockIn.body}</p>
+          <p className="font-display text-3xl font-bold tracking-tight md:text-4xl">{yourData.title}</p>
+          <p className="max-w-md leading-relaxed opacity-75">{yourData.body}</p>
           <div className="flex flex-wrap items-center gap-2 pt-1 text-sm opacity-90">
-            <span>{OFFERINGS.ownServers.label}:</span>
-            <StatusBadge status={OFFERINGS.ownServers.status} tone="inverse" />
+            <span>The connected library is part of Nuru:</span>
+            <StatusBadge status={nuru.status} tone="inverse" />
           </div>
         </div>
       </div>

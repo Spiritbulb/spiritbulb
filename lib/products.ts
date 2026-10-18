@@ -111,10 +111,10 @@ export const PRODUCTS: Product[] = [
     canonical: "https://mcloud.spiritb.uk",
     tagline: "Managed infrastructure with local billing, on clean energy",
     description:
-      "MCloud is managed infrastructure with easy local billing, running on green infrastructure, for East African businesses and institutions. Hosted AI models and your own servers are available on request.",
+      "Run your storefront and Linux servers on MCloud. Top up with M-Pesa, pay by the hour in shillings, and run on green infrastructure. AI model hosting on request.",
     heading: "Managed infrastructure, billed the local way.",
     intro:
-      "MCloud runs your shop with easy local billing. Need AI models hosted, or want to run on your own servers? Talk to us.",
+      "Run your storefront and your servers on MCloud. Top up with M-Pesa, pay by the hour in shillings, and run on green infrastructure.",
     category: "BusinessApplication",
   },
   {

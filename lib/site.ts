@@ -70,11 +70,6 @@ export const OFFERINGS = {
     status: "on-request",
     topic: "partnership",
   },
-  ownServers: {
-    label: "Run on your own servers",
-    status: "on-request",
-    topic: "general",
-  },
   /** Only ever shown on the MCloud page and in the Contact flow. */
   kenyanHosting: {
     label: "Hosting in Kenya",

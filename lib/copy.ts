@@ -42,15 +42,17 @@ export const THREADS = [
   {
     id: "clean-energy",
     title: "Clean energy underneath.",
-    // MCloud runs on UpCloud's green infrastructure. That is also why hosting
+    // MCloud runs on green infrastructure. That is also why hosting
     // in Kenya is on request: the local option has to meet the same bar.
     body: "Running on renewable energy is part of the infrastructure, not a footnote.",
     ready: true,
   },
   {
-    id: "no-lock-in",
-    title: "No lock-in.",
-    body: "Run on MCloud or your own servers. Share from your connected library only what you choose.",
+    // Was "No lock-in" with running on your own servers. That is not offered
+    // (Nuru may support it after the preview), so the thread is the library alone.
+    id: "your-data",
+    title: "Your data, your call.",
+    body: "Your connected library starts private. You choose what to share.",
     ready: true,
   },
 ] as const;

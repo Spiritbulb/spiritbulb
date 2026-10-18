@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ProductPage from "@/components/ProductPage";
+import McloudPage from "@/components/product/mcloud-page";
 import { bySlug, productJsonLd, productMetadata } from "@/lib/products";
 
 const product = bySlug("mcloud");
@@ -15,7 +15,7 @@ export default function Page() {
           __html: JSON.stringify(productJsonLd(product)),
         }}
       />
-      <ProductPage product={product} />
+      <McloudPage />
     </>
   );
 }

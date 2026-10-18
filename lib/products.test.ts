@@ -57,8 +57,8 @@ describe("banned phrases", () => {
   it.each([
     ["intelligent infrastructure", /intelligent infrastructure/i],
     ["open library", /open library/i],
-    // Kenyan hosting is on request and only on the MCloud page and Contact (§1).
-    ["hosted in Kenya", /hosted in kenya|infrastructure in kenya/i],
+    // Infrastructure providers are not named on the site; there will be more than one.
+    ["a provider's name", /upcloud/i],
   ])("never says %s", (_, re) => {
     const hits = files.filter((f) => re.test(readFileSync(f, "utf8")));
     expect(hits.map((f) => path.relative(root, f))).toEqual([]);
@@ -68,12 +68,16 @@ describe("banned phrases", () => {
     const allowed = [
       "lib/site.ts",
       "app/(marketing)/mcloud/",
-      "components/mcloud/",
+      "components/product/mcloud-page.tsx",
       "app/(marketing)/contact/",
       "app/api/contact/",
     ];
     const hits = files
-      .filter((f) => /kenyan.?hosting|hosting in kenya/i.test(readFileSync(f, "utf8")))
+      .filter((f) =>
+        /kenyan.?hosting|hosting in kenya|hosted in kenya|infrastructure in kenya/i.test(
+          readFileSync(f, "utf8"),
+        ),
+      )
       .map((f) => path.relative(root, f))
       .filter((f) => !allowed.some((a) => f.startsWith(a)));
     expect(hits).toEqual([]);

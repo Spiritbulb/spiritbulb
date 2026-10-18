@@ -203,9 +203,14 @@ After the main site is done, move these into a reusable form (shared package, or
 
 Recorded from the owner during phases 1 and 2 (October 2026).
 
-- **Hosted open-source models:** on request. Running on your own servers: on request.
+- **Hosted open-source models:** on request.
+- **Running on your own servers:** dropped (October 2026). Nothing is offered that way today; Nuru may support it after the preview. This replaces the "No lock-in" thread and the own-servers parts of §2, §6.1 and §6.3. Thread 5 is now "Your data, your call": the connected library starts private and you choose what to share.
+- **Trading apps:** being scrapped; not on the site.
 - **Clean energy:** true today. MCloud runs on UpCloud's green infrastructure. That is why Kenyan hosting stays on request while the local option is worked out; it is still available if you talk to us.
 - **Reach sign-up:** goes to app.mcloud.co.ke (the MCloud store app) until Reach has its own web app.
+- **Reach:** a themed storefront where you add products, set up payments, edit the design, share the link and manage orders. Free plan to try it. The marketplace is for paid plans only and by approval, reviewed on a rolling basis, requested from the dashboard. Listed stores reach buyers in their delivery zone, with orders and deliveries tracked together. Plans and prices: mcloud's packages/merchant/src/plans.ts.
+- **Hosting:** everything moves to UpCloud over time. Today UpCloud runs MCloud's servers; storefronts are still on Vercel.
+- **Naming providers:** the site never names infrastructure providers; there will be more than one. Say "green infrastructure". (Pinned in lib/products.test.ts.)
 - **Nuru preview:** web only. It will be built on the Nuru page, using MCloud's existing Nuru APIs through new partner endpoints for spiritbulb. The Android app is closed to existing users; access on request.
 - **Tufike waitlist:** stored through `/api/waitlist`, MCloud's partner waitlist.
 - **About:** registered 2024; founders Bentley Busienei, Stephanie Kanji, Nelly Miano. Headcount is not mentioned.

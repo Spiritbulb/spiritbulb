@@ -1,5 +1,5 @@
 'use client';
-import { useState, useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Sun, Moon, Menu, X } from 'lucide-react';
@@ -36,7 +36,6 @@ export default function Header() {
     const signedIn = useSyncExternalStore(subscribe, readHint, () => false);
     const home = useSyncExternalStore(subscribe, readHome, () => '/');
     const pathname = usePathname();
-    const [open, setOpen] = useState(false);
 
     // The theme is already applied to <html> by the pre-hydration script in the
     // layout, and which icon/logo shows is decided in CSS. So nothing here reads
@@ -51,7 +50,7 @@ export default function Header() {
 
     const linkCls = (href: string) =>
         cn(
-            'rounded-md px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-foreground',
+            'rounded-md px-3 py-2.5 text-sm font-medium transition-colors hover:bg-accent hover:text-foreground lg:py-1.5',
             pathname === href ? 'text-foreground' : 'text-muted-foreground'
         );
 
@@ -62,7 +61,6 @@ export default function Header() {
             href={href}
             aria-current={pathname === href ? 'page' : undefined}
             className={linkCls(href)}
-            onClick={() => setOpen(false)}
         >
             {label}
         </a>
@@ -106,41 +104,43 @@ export default function Header() {
                     <button
                         onClick={toggleDarkMode}
                         aria-label="Switch theme"
-                        className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                        className="flex h-10 w-10 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:h-8 lg:w-8"
                     >
                         {/* Both icons render; CSS shows the one for the current theme. */}
                         <Moon className="logo-light h-4 w-4" />
                         <Sun className="logo-dark h-4 w-4" />
                     </button>
-                    <button
-                        onClick={() => setOpen((o) => !o)}
-                        aria-expanded={open}
-                        aria-controls="mobile-nav"
-                        aria-label={open ? 'Close menu' : 'Open menu'}
-                        className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:hidden"
-                    >
-                        {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-                    </button>
+
+                    {/* The phone menu is a native <details>, so it opens before any
+                        JavaScript has loaded: on a slow connection, and when the dev
+                        server is opened from another device. Links are full page
+                        loads, which close it. */}
+                    <details className="group lg:hidden">
+                        <summary
+                            aria-label="Menu"
+                            className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground [&::-webkit-details-marker]:hidden"
+                        >
+                            <Menu className="h-5 w-5 group-open:hidden" />
+                            <X className="hidden h-5 w-5 group-open:block" />
+                        </summary>
+                        <nav
+                            aria-label="Main"
+                            className="absolute inset-x-0 top-full border-b border-border/50 bg-background px-4 pb-4 pt-2 shadow-sm"
+                        >
+                            <div className="flex flex-col">
+                                {links}
+                                {signedIn && (
+                                    <form action="/api/auth/logout" method="post" className="sm:hidden">
+                                        <button type="submit" className={cn(linkCls(''), 'w-full text-left')}>
+                                            Sign out
+                                        </button>
+                                    </form>
+                                )}
+                            </div>
+                        </nav>
+                    </details>
                 </div>
             </div>
-
-            <nav
-                id="mobile-nav"
-                aria-label="Main"
-                hidden={!open}
-                className="border-t border-border/50 px-4 pb-4 pt-2 lg:hidden"
-            >
-                <div className="flex flex-col">
-                    {links}
-                    {signedIn && (
-                        <form action="/api/auth/logout" method="post" className="sm:hidden">
-                            <button type="submit" className={cn(linkCls(''), 'w-full text-left')}>
-                                Sign out
-                            </button>
-                        </form>
-                    )}
-                </div>
-            </nav>
         </header>
     );
 }
