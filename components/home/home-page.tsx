@@ -155,7 +155,7 @@ function OnePlatform() {
             </div>
           </div>
           <Layer name="MCloud" status={mcloud.status} color={mcloud.color}>
-            Hosting and local billing underneath, on clean energy.
+            Hosting and local billing underneath.
           </Layer>
         </figure>
 

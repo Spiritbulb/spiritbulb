@@ -8,6 +8,7 @@ const LABEL: Record<Status, string> = {
   ...STATUS_LABEL,
   "on-request": "On request",
   coming: "Coming",
+  "by-approval": "By approval",
 };
 
 const TONE: Record<Status, string> = {
@@ -15,6 +16,8 @@ const TONE: Record<Status, string> = {
   preview: "border-status-preview/30 bg-status-preview/10 text-status-preview",
   waitlist: "border-status-waitlist/30 bg-status-waitlist/10 text-status-waitlist",
   "on-request":
+    "border-status-on-request/30 bg-status-on-request/10 text-status-on-request",
+  "by-approval":
     "border-status-on-request/30 bg-status-on-request/10 text-status-on-request",
   // Dashed and untinted: coming things read as not here yet.
   coming: "border-dashed border-status-coming/60 text-status-coming",

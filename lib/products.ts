@@ -84,14 +84,19 @@ export const PRODUCTS: Product[] = [
     textColor: "var(--reach-text)",
     status: "live",
     // Storefronts are built in the MCloud store app until Reach has its own web app.
-    primary: { label: "Start selling", href: "https://app.mcloud.co.ke", kind: "signup" },
+    primary: {
+      label: "Start selling",
+      href: "https://app.mcloud.co.ke",
+      kind: "signup",
+      note: "Free plan to start.",
+    },
     canonical: "https://reach.spiritb.uk",
     tagline: "Build a storefront and sell on the marketplace",
     description:
-      "Reach lets East African businesses build a storefront and sell on the Reach marketplace, with local billing.",
+      "Open a themed storefront, take M-Pesa and share your link today. On a paid plan, apply to the Reach marketplace and get in front of buyers in your delivery zone.",
     heading: "Build a storefront. Sell on the marketplace.",
     intro:
-      "Reach puts your shop online and onto the Reach marketplace, running on MCloud with local billing.",
+      "Open a themed storefront, take M-Pesa and share your link today. When you're ready, apply to the Reach marketplace and get in front of buyers in your delivery zone.",
     category: "ShoppingApplication",
   },
   {

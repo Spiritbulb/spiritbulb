@@ -38,7 +38,7 @@ export const ORG = {
  * Statuses for things that are not products: offerings sold by conversation,
  * and features that are announced but not built. Products use ProductStatus.
  */
-export type OfferingStatus = "on-request" | "coming";
+export type OfferingStatus = "on-request" | "coming" | "by-approval";
 
 export type ContactTopic = { id: string; label: string };
 

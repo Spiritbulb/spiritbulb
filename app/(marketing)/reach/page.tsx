@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ProductPage from "@/components/ProductPage";
+import ReachPage from "@/components/product/reach-page";
 import { bySlug, productJsonLd, productMetadata } from "@/lib/products";
 
 const product = bySlug("reach");
@@ -15,7 +15,7 @@ export default function Page() {
           __html: JSON.stringify(productJsonLd(product)),
         }}
       />
-      <ProductPage product={product} />
+      <ReachPage />
     </>
   );
 }
