@@ -1,5 +1,6 @@
 'use client';
 import { useState, useSyncExternalStore } from 'react';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Sun, Moon, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -72,7 +73,7 @@ export default function Header() {
             <div className="container mx-auto flex h-14 items-center justify-between gap-4 px-4 md:px-6">
 
                 <a href={home} className="flex shrink-0 items-center gap-2" aria-label="Spiritbulb home">
-                    <img src="/logo.svg" alt="" className="h-7 w-auto" />
+                    <Image src="/logo.svg" alt="" width={43} height={28} priority className="h-7 w-auto" />
                     <span className="text-[15px] font-semibold tracking-tight">Spiritbulb</span>
                 </a>
 

@@ -65,6 +65,11 @@ export const OFFERINGS = {
     status: "on-request",
     topic: "partnership",
   },
+  byoModel: {
+    label: "Bring your own model and run it on MCloud",
+    status: "on-request",
+    topic: "partnership",
+  },
   ownServers: {
     label: "Run on your own servers",
     status: "on-request",

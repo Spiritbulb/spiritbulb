@@ -63,4 +63,19 @@ describe("banned phrases", () => {
     const hits = files.filter((f) => re.test(readFileSync(f, "utf8")));
     expect(hits.map((f) => path.relative(root, f))).toEqual([]);
   });
+
+  it("mentions Kenyan hosting only in the config, the MCloud page and Contact", () => {
+    const allowed = [
+      "lib/site.ts",
+      "app/(marketing)/mcloud/",
+      "components/mcloud/",
+      "app/(marketing)/contact/",
+      "app/api/contact/",
+    ];
+    const hits = files
+      .filter((f) => /kenyan.?hosting|hosting in kenya/i.test(readFileSync(f, "utf8")))
+      .map((f) => path.relative(root, f))
+      .filter((f) => !allowed.some((a) => f.startsWith(a)));
+    expect(hits).toEqual([]);
+  });
 });

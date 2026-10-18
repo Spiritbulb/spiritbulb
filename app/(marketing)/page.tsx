@@ -1,131 +1,51 @@
-// app/page.tsx  –  drop-in replacement for your homepage
-// Add this to your layout.tsx or as a Next.js 13+ Metadata export from this file.
-// The `metadata` export below is for Next.js App Router; move to layout if you prefer.
-
 import type { Metadata } from "next";
-import HomePage from "@/components/home-client";
+import HomePage from "@/components/home/home-page";
+import { HERO, ONE_LINER } from "@/lib/copy";
+import { PRODUCTS, productJsonLd } from "@/lib/products";
+import { ORG, SITE } from "@/lib/site";
+
+const title = `${ORG.name}: ${HERO.headline}`;
 
 export const metadata: Metadata = {
-  // ── Core ──────────────────────────────────────────────────────────────────
-  title: "Spiritbulb | Build, sell, and engage your audience",
-  description:
-    "One platform for East African businesses and institutions, with AI built in.",
-
-  // ── Canonical & robots ────────────────────────────────────────────────────
-  metadataBase: new URL("https://spiritb.uk"),
+  title: { absolute: title },
+  description: ONE_LINER,
   alternates: { canonical: "/" },
-  robots: { index: true, follow: true },
-
-  // ── Open Graph (Facebook, WhatsApp, LinkedIn) ─────────────────────────────
   openGraph: {
     type: "website",
-    url: "https://spiritb.uk",
-    siteName: "Spiritbulb",
-    title: "Spiritbulb | Build, sell, and engage your audience",
-    description:
-      "Spiritbulb provides an ecosystem to build, sell, and engage your audience. MCloud, Reach, Nuru, and Tufike run on Spiritbulb's own infrastructure.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Spiritbulb | Nuru, Reach, Menengai Cloud, Tufike",
-      },
-    ],
+    url: SITE,
+    siteName: ORG.name,
+    title,
+    description: ONE_LINER,
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: `${ORG.name}: Reach, MCloud, Tufike, Nuru` }],
     locale: "en_KE",
   },
-
-  // ── Twitter / X Card ──────────────────────────────────────────────────────
   twitter: {
     card: "summary_large_image",
     site: "@spiritbulb",
-    title: "Spiritbulb | Build, sell, and engage your audience",
-    description:
-      "MCloud, Reach, Nuru, and Tufike, the Spiritbulb ecosystem, built in Kenya.",
+    title,
+    description: ONE_LINER,
     images: ["/og-image.png"],
   },
-
-  // ── Keywords (minor signal but still useful) ──────────────────────────────
-  keywords: [
-    "Spiritbulb",
-    "Nuru student network Kenya",
-    "Reach e-commerce Nakuru",
-    "Menengai Cloud",
-    "Tufike events Kenya",
-    "Kenyan tech startup",
-    "African cloud infrastructure",
-    "local marketplace Kenya",
-  ],
 };
 
-// ── JSON-LD Structured Data ───────────────────────────────────────────────────
-// Inline it as a <script> in the page so crawlers and rich-result tools see it.
+// The Organization lives in the root layout. Here: the site, and the four products,
+// each described by the same config as its own page.
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Organization",
-      "@id": "https://spiritb.uk/#org",
-      name: "Spiritbulb",
-      url: "https://spiritb.uk",
-      logo: {
-        "@type": "ImageObject",
-        url: "https://spiritb.uk/spiritbulb-logo.png",
-      },
-      sameAs: [
-        "https://twitter.com/spiritbulb",  // update
-        "https://linkedin.com/company/spiritbulb",
-      ],
-      description:
-        "One platform for East African businesses and institutions, with AI built in.",
-      foundingLocation: {
-        "@type": "Place",
-        name: "Kenya",
-      },
-    },
-    {
       "@type": "WebSite",
-      "@id": "https://spiritb.uk/#website",
-      url: "https://spiritb.uk",
-      name: "Spiritbulb",
-      publisher: { "@id": "https://spiritb.uk/#org" },
+      "@id": `${SITE}/#website`,
+      url: SITE,
+      name: ORG.name,
+      publisher: { "@id": `${SITE}/#org` },
     },
-    // Product entries (SoftwareApplication schema)
-    {
-      "@type": "SoftwareApplication",
-      name: "Nuru",
-      applicationCategory: "SocialNetworkingApplication",
-      operatingSystem: "Web",
-      url: "https://nuru.spiritb.uk",
-      description:
-        "Nuru manages educational content for institutions in Kenya.",
-      offers: { "@type": "Offer", price: "0", priceCurrency: "KES" },
-    },
-    {
-      "@type": "SoftwareApplication",
-      name: "Reach",
-      applicationCategory: "ShoppingApplication",
-      operatingSystem: "Web",
-      description:
-        "Reach manages social media and fulfillment integrations for merchants and NGOs in Kenya.",
-      offers: { "@type": "Offer", price: "0", priceCurrency: "KES" },
-    },
-    {
-      "@type": "SoftwareApplication",
-      name: "Menengai Cloud",
-      applicationCategory: "BusinessApplication",
-      operatingSystem: "Web",
-      description:
-        "MCloud manages apps and cloud services for merchants, brokers, and NGOs in Kenya.",
-    },
-    {
-      "@type": "SoftwareApplication",
-      name: "Tufike",
-      applicationCategory: "EventsApplication",
-      operatingSystem: "Web",
-      description:
-        "Tufike manages brand exposure and venues in Kenya.",
-    },
+    // Inside a @graph the entries share the outer @context.
+    ...PRODUCTS.map((p) =>
+      Object.fromEntries(
+        Object.entries(productJsonLd(p)).filter(([key]) => key !== "@context")
+      )
+    ),
   ],
 };
 

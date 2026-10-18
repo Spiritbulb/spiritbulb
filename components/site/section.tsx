@@ -44,7 +44,7 @@ export function Section({
               <Heading
                 id={headingId}
                 className={cn(
-                  "font-bold tracking-tight",
+                  "font-display font-bold tracking-tight",
                   Heading === "h1"
                     ? "text-4xl md:text-6xl"
                     : "text-2xl md:text-4xl"

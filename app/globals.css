@@ -144,28 +144,51 @@
    SITE TOKENS (docs/site-plan.md §7)
    Brand, the four doors, and status colours. Pages and graphics read these,
    never raw hex, so light and dark mode and the other sites stay in step.
-   `-ink` variants are for text on the page background; the plain ones are
-   for fills, marks, and accents.
+
+   Door colours have three roles:
+   - the plain token (--reach) is the fill: bands, petals, marks. It is the
+     same in both themes; black (--ink) text on it scores 6.2 or better.
+   - `-text` is the same hue dark enough to read as body text (4.5+) on the
+     light page. On dark, the fill already reads (6.6+), so it is reused.
+   - tints are mixed in sRGB at use (color-mix(in srgb, ...)), which keeps
+     each door's hue; OKLCH mixing drifts red to salmon and teal to sage.
+   Reach is marigold, not amber, so it stays apart from the logo gold; Tufike
+   is coral so a live Tufike band can carry black text like the others.
    ============================================= */
 :root {
   --brand: #bd8e2d;
   --brand-soft: #cda146;
-  --brand-ink: oklch(0.5 0.09 75);
+  --brand-ink: #946b03;
 
-  --reach: #e0a030;
+  --reach: #f5b700;
   --mcloud: #38b6ff;
-  --tufike: #d6453d;
+  --tufike: #ff5d52;
   --nuru: #14b8a6;
+
+  --reach-text: #956900;
+  --mcloud-text: #0078b1;
+  --tufike-text: #ce3b35;
+  --nuru-text: #007f71;
 
   --status-live: oklch(0.5 0.13 150);
   --status-preview: oklch(0.5 0.1 75);
   --status-waitlist: oklch(0.48 0.12 25);
   --status-on-request: oklch(0.48 0.1 240);
   --status-coming: oklch(0.55 0.012 55);
+
+  /* Text and buttons on a solid door colour. The same in both modes, because
+     the door colours are. */
+  --ink: #141210;
+  --on-ink: #fffaf2;
 }
 
 .dark {
   --brand-ink: oklch(0.8 0.1 82);
+
+  --reach-text: var(--reach);
+  --mcloud-text: var(--mcloud);
+  --tufike-text: var(--tufike);
+  --nuru-text: var(--nuru);
 
   --status-live: oklch(0.8 0.14 150);
   --status-preview: oklch(0.82 0.1 82);
@@ -182,11 +205,18 @@
   --color-mcloud: var(--mcloud);
   --color-tufike: var(--tufike);
   --color-nuru: var(--nuru);
+  --color-reach-text: var(--reach-text);
+  --color-mcloud-text: var(--mcloud-text);
+  --color-tufike-text: var(--tufike-text);
+  --color-nuru-text: var(--nuru-text);
   --color-status-live: var(--status-live);
   --color-status-preview: var(--status-preview);
   --color-status-waitlist: var(--status-waitlist);
   --color-status-on-request: var(--status-on-request);
   --color-status-coming: var(--status-coming);
+  --color-ink: var(--ink);
+  --color-on-ink: var(--on-ink);
+  --font-display: var(--font-bricolage), var(--font-geist-sans), system-ui, sans-serif;
 }
 
 @layer base {
@@ -634,5 +664,34 @@ body {
   .footer-legal {
     flex-direction: column;
     gap: 0.5rem;
+  }
+}
+/* ============================================
+   ENTRANCE ANIMATIONS
+   CSS, not JavaScript, so content is never left invisible waiting for
+   hydration on a slow connection. `both` holds the first frame during a delay.
+   ============================================= */
+@keyframes petal-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+
+.petal-in {
+  animation: petal-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fade-up {
+  animation: fade-up 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .petal-in,
+  .fade-up {
+    animation: none;
   }
 }

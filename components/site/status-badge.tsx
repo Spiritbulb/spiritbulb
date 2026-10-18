@@ -20,19 +20,33 @@ const TONE: Record<Status, string> = {
   coming: "border-dashed border-status-coming/60 text-status-coming",
 };
 
+/**
+ * On a solid door colour or an inverted band the status colours lose their
+ * contrast, so the badge falls back to that surface's own text colour.
+ */
+export type BadgeTone = "default" | "ink" | "inverse";
+
+const SURFACE: Record<Exclude<BadgeTone, "default">, string> = {
+  ink: "border-ink/25 bg-ink/10 text-ink",
+  inverse: "border-background/30 bg-background/10 text-background",
+};
+
 /** The one badge for product and offering status. Its text comes from config, never from a page. */
 export function StatusBadge({
   status,
+  tone = "default",
   className,
 }: {
   status: Status;
+  tone?: BadgeTone;
   className?: string;
 }) {
   return (
     <span
       className={cn(
         "inline-flex w-fit shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-medium",
-        TONE[status],
+        tone === "default" ? TONE[status] : SURFACE[tone],
+        status === "coming" && "border-dashed",
         className
       )}
     >

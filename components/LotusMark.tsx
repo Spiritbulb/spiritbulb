@@ -1,6 +1,3 @@
-"use client";
-
-import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import PATHS from "./lotus-paths.json";
 
@@ -39,8 +36,6 @@ export default function LotusMark({
   /** Colour only this product's petal. The centre petal stays inked regardless. */
   active?: Exclude<PetalId, "core">;
 }) {
-  const reduce = useReducedMotion();
-
   const label = active
     ? `The Spiritbulb lotus, with the ${active} petal lit.`
     : "The Spiritbulb lotus. One petal for each product, and one for Spiritbulb.";
@@ -58,20 +53,13 @@ export default function LotusMark({
         const lit = !active || petal.id === "core" || petal.id === active;
 
         return (
-          <motion.g
+          // A CSS animation, not framer-motion: it runs without JavaScript, so
+          // the mark is never stuck invisible waiting for hydration. Petals
+          // arrive outward from the centre, so it reads as opening.
+          <g
             key={petal.id}
-            initial={reduce ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={
-              reduce
-                ? { duration: 0 }
-                : {
-                    duration: 0.7,
-                    // Petals arrive outward from the centre, so it reads as opening.
-                    delay: i * 0.14,
-                    ease: [0.22, 1, 0.36, 1],
-                  }
-            }
+            className="petal-in"
+            style={{ animationDelay: `${i * 0.14}s` }}
           >
             <path
               d={PATHS[petal.id].outer.d}
@@ -85,7 +73,7 @@ export default function LotusMark({
               className={lit ? undefined : "text-muted-foreground"}
               opacity={lit ? 0.42 : 0.18}
             />
-          </motion.g>
+          </g>
         );
       })}
     </svg>

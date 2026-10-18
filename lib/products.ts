@@ -51,7 +51,10 @@ export type Product = {
   verb: "Sell" | "Host" | "Gather" | "Teach";
   /** The door card line on the homepage. */
   door: string;
+  /** Fill: bands, petals, marks. A design token, the same in both themes. */
   color: string;
+  /** The same hue, readable as text on the page in either theme. */
+  textColor: string;
   status: ProductStatus;
   primary: Action;
   secondary?: Action;
@@ -78,6 +81,7 @@ export const PRODUCTS: Product[] = [
     verb: "Sell",
     door: "Build a storefront and sell on the marketplace.",
     color: "var(--reach)",
+    textColor: "var(--reach-text)",
     status: "live",
     // Storefronts are built in the MCloud store app until Reach has its own web app.
     primary: { label: "Start selling", href: "https://app.mcloud.co.ke", kind: "signup" },
@@ -96,6 +100,7 @@ export const PRODUCTS: Product[] = [
     verb: "Host",
     door: "Managed infrastructure with local billing, running on clean energy.",
     color: "var(--mcloud)",
+    textColor: "var(--mcloud-text)",
     status: "live",
     primary: { label: "Get started", href: "/go/mcloud?to=/", kind: "signup" },
     canonical: "https://mcloud.spiritb.uk",
@@ -113,6 +118,7 @@ export const PRODUCTS: Product[] = [
     verb: "Gather",
     door: "Ticketing plus the before and after that keeps your audience hooked.",
     color: "var(--tufike)",
+    textColor: "var(--tufike-text)",
     status: "waitlist",
     primary: {
       label: "Join the waitlist",
@@ -135,6 +141,7 @@ export const PRODUCTS: Product[] = [
     verb: "Teach",
     door: "AI built for learning. Upload what you study, get notes and questions, and keep a library you control.",
     color: "var(--nuru)",
+    textColor: "var(--nuru-text)",
     status: "preview",
     primary: {
       label: "Try the preview",

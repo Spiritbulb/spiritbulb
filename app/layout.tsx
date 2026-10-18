@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import { ORG, SITE, orgJsonLd } from "@/lib/site";
 import { HERO, ONE_LINER } from "@/lib/copy";
 import Footer from "@/components/Footer";
@@ -14,6 +14,13 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+// Headlines only (`font-display`). Body text stays Geist.
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -79,9 +86,14 @@ export default function RootLayout({
   return (
     // suppressHydrationWarning: the script below sets data-theme/class on <html>
     // before React hydrates, which is deliberate and is what this prop is for.
-    <html lang="en" suppressHydrationWarning>
+    // The font variables go on <html>, not <body>: Tailwind defines --font-sans on
+    // :root as var(--font-geist-sans), which only resolves if the variable exists there.
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} ${bricolage.variable}`}
+    >
       <head>
-        <link rel="me" href="https://mastodon.social/@benalldaway" />
         {/* Runs before first paint, so the page never flashes the wrong theme. */}
         <script
           dangerouslySetInnerHTML={{
@@ -94,7 +106,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="antialiased"
       >
         {children}
         <ServiceWorkerRegistrar />

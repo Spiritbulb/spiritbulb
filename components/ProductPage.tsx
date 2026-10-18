@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
-import { motion, useInView } from "framer-motion";
+import { useState, useTransition } from "react";
 import { cn } from "@/lib/utils";
 import LotusMark from "@/components/LotusMark";
 import { StatusBadge } from "@/components/site/status-badge";
@@ -10,6 +9,7 @@ import type { Product } from "@/lib/products";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/** Rises in with CSS, so the content is visible without JavaScript. */
 function FadeIn({
   children,
   className,
@@ -19,18 +19,10 @@ function FadeIn({
   className?: string;
   delay?: number;
 }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay, ease: [0.25, 0.1, 0.25, 1] }}
-      className={className}
-    >
+    <div className={cn("fade-up", className)} style={{ animationDelay: `${delay}s` }}>
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -146,7 +138,7 @@ export default function ProductPage({ product }: { product: Product }) {
             <StatusBadge status={product.status} />
           </div>
 
-          <h1 className="text-[2.4rem] font-bold leading-[1.06] tracking-tight md:text-[3.25rem]">
+          <h1 className="font-display text-[2.4rem] font-bold leading-[1.06] tracking-tight md:text-[3.25rem]">
             {product.heading}
           </h1>
 
