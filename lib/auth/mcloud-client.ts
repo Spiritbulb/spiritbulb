@@ -47,11 +47,14 @@ export async function requestHandoff(
   tokens: { accessToken: string; refreshToken: string },
   redirectTo: string
 ): Promise<{ ok: boolean; url?: string; error?: string }> {
+  // Logged fields are the target and the failure reason only: never the secret or tokens.
+  let target = "(MCLOUD_BASE unset)";
   try {
     // MCloud partner handoff: 200 { url } with a single-use redeem URL on success,
     // 401/429/400 { error } otherwise. redirect: "error" — a 30x would drop the
     // x-partner-secret header (see requestCode).
-    const res = await fetch(`${base()}/auth/handoff`, {
+    target = `${base()}/auth/handoff`;
+    const res = await fetch(target, {
       method: "POST",
       headers: headers(),
       body: JSON.stringify({ ...tokens, redirectTo }),
@@ -59,10 +62,16 @@ export async function requestHandoff(
     });
     const d = await res.json().catch(() => null);
     if (!res.ok || !d?.url) {
+      console.error(
+        `[handoff] MCloud refused: POST ${target} -> ${res.status}`,
+        { error: d?.error ?? null, hasUrl: Boolean(d?.url) },
+      );
       return { ok: false, error: d?.error ?? "Could not start the handoff. Please try again." };
     }
     return { ok: true, url: d.url };
-  } catch {
+  } catch (err) {
+    // Config errors (unset env) and network/redirect errors land here.
+    console.error(`[handoff] request failed: POST ${target}`, err);
     return { ok: false, error: "Network error. Please try again." };
   }
 }

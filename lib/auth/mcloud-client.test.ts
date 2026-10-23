@@ -4,7 +4,7 @@ import { requestCode, verifyCode, requestHandoff } from "@/lib/auth/mcloud-clien
 const realFetch = global.fetch;
 
 beforeEach(() => {
-  process.env.MCLOUD_AUTH_BASE = "https://mcloud.co.ke/api/partner/auth";
+  process.env.MCLOUD_BASE = "https://mcloud.co.ke/api/partner";
   process.env.PARTNER_AUTH_SECRET = "test-secret";
 });
 afterEach(() => {
