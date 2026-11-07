@@ -1,5 +1,6 @@
 // app/api/contact/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { clientIp, verifyTurnstile } from '@/lib/turnstile';
 
 // HubSpot form (same IDs the embed used)
 const PORTAL_ID = '148621871';
@@ -17,34 +18,6 @@ interface ContactBody {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
-
-async function verifyTurnstile(token: string, remoteip: string | null): Promise<boolean> {
-    const secret = process.env.TURNSTILE_SECRET_KEY;
-    if (!secret) {
-        console.error('TURNSTILE_SECRET_KEY is not set');
-        return false;
-    }
-
-    const form = new URLSearchParams();
-    form.append('secret', secret);
-    form.append('response', token);
-    if (remoteip) form.append('remoteip', remoteip);
-
-    try {
-        const res = await fetch(TURNSTILE_VERIFY_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: form,
-        });
-        const data = (await res.json()) as { success?: boolean };
-        return data.success === true;
-    } catch (err) {
-        console.error('Turnstile verification error:', err);
-        return false;
-    }
-}
 
 export async function POST(req: NextRequest) {
     let body: ContactBody;
@@ -71,8 +44,7 @@ export async function POST(req: NextRequest) {
     if (!turnstileToken) {
         return NextResponse.json({ error: 'Please complete the verification challenge.' }, { status: 400 });
     }
-    const remoteip = req.headers.get('cf-connecting-ip') ?? req.headers.get('x-forwarded-for');
-    const humanVerified = await verifyTurnstile(turnstileToken, remoteip);
+    const humanVerified = await verifyTurnstile(turnstileToken, clientIp(req.headers));
     if (!humanVerified) {
         return NextResponse.json({ error: 'Verification failed. Please try again.' }, { status: 403 });
     }

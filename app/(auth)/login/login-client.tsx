@@ -84,12 +84,10 @@ export default function LoginClient() {
     setNotice(null);
     const res = await postRequestCode();
     setBusy(false);
+    spendToken();
     if (!res.ok) {
       const d = await res.json().catch(() => null);
       setError(d?.error ?? "Could not send a code. Please try again.");
-      // Token is single-use — reset the widget so the user can retry.
-      turnstileRef.current?.reset();
-      setToken('');
       return;
     }
     setCode("");
@@ -101,17 +99,24 @@ export default function LoginClient() {
     return fetch("/api/auth/request-code", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, turnstileToken: token }),
     }).catch(() => new Response(null, { status: 502 }));
   }
 
+  // A Turnstile token works once. After every request, get a fresh one for the next.
+  function spendToken() {
+    turnstileRef.current?.reset();
+    setToken("");
+  }
+
   async function resend() {
-    if (busy || cooldown > 0) return;
+    if (busy || cooldown > 0 || (SITE_KEY && !token)) return;
     setBusy(true);
     setError(null);
     setNotice(null);
     const res = await postRequestCode();
     setBusy(false);
+    spendToken();
     if (!res.ok) {
       const d = await res.json().catch(() => null);
       setError(d?.error ?? "Could not send a new code. Please try again.");
@@ -129,9 +134,8 @@ export default function LoginClient() {
     setError(null);
     setNotice(null);
     setCooldown(0);
-    // The Turnstile token was spent on the first request; ask for a fresh one.
-    turnstileRef.current?.reset();
-    setToken('');
+    // The widget on this step is gone and the old token was spent; the email step brings its own.
+    setToken("");
   }
 
   async function verify(e: React.FormEvent) {
@@ -152,6 +156,20 @@ export default function LoginClient() {
     }
     window.location.assign(next);
   }
+
+  const challenge = SITE_KEY ? (
+    <Turnstile
+      key={step}
+      ref={turnstileRef}
+      siteKey={SITE_KEY}
+      onSuccess={(t) => setToken(t)}
+      onExpire={() => setToken("")}
+      onError={() => setToken("")}
+      // 'flexible' lets the widget fill its container, so it lines up
+      // with the input and button instead of sitting at a fixed 300px.
+      options={{ theme: "auto", size: "flexible" }}
+    />
+  ) : null;
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-background px-4 md:py-20">
@@ -215,20 +233,7 @@ export default function LoginClient() {
               />
             </div>
 
-            {SITE_KEY && (
-              <Turnstile
-                ref={turnstileRef}
-                siteKey={SITE_KEY}
-                onSuccess={(t) => {
-                  setToken(t);
-                }}
-                onExpire={() => setToken('')}
-                onError={() => setToken('')}
-                // 'flexible' lets the widget fill its container, so it lines up
-                // with the input and button instead of sitting at a fixed 300px.
-                options={{ theme: 'auto', size: 'flexible' }}
-              />
-            )}
+            {challenge}
             <Button type="submit" size="lg" className="w-full" disabled={busy || (!!SITE_KEY && !token)}>
               {busy ? "Sending" : "Send code"}
             </Button>
@@ -259,11 +264,13 @@ export default function LoginClient() {
             <Button type="submit" size="lg" className="w-full" disabled={busy}>
               {busy ? "Verifying" : "Verify"}
             </Button>
+            {/* A resend sends another email, so it needs its own challenge. */}
+            {cooldown === 0 && challenge}
             <div className="flex items-center justify-between text-sm">
               <button
                 type="button"
                 onClick={resend}
-                disabled={busy || cooldown > 0}
+                disabled={busy || cooldown > 0 || (!!SITE_KEY && !token)}
                 className="min-h-11 px-1 underline underline-offset-4 disabled:cursor-not-allowed disabled:text-muted-foreground disabled:no-underline"
               >
                 {cooldown > 0 ? `Resend code in ${cooldown}s` : "Resend code"}
